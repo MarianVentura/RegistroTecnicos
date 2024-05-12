@@ -1,0 +1,50 @@
+﻿@page "/Create"
+@page "/Create/{prioridadId:int}"
+@inject TecnicoService TecnicoService
+@inject ITecnicoService ITecnicoService
+@inject NavigationManager navigationManager
+@inject IJSRuntime jsRuntime
+
+
+@code {
+    
+    Tecnico Tecnico = new Tecnico();
+
+    
+    private void GuardarCambios()
+    {
+        
+    }
+}
+
+@rendermode InteractiveServer
+
+<PageTitle>Registro de Prioridades</PageTitle>
+<EditForm Model="Tecnico" OnValidSubmit="GuardarCambios" FormName="prioridadForm">
+    <DataAnnotationsValidator />
+    <div class="container">
+        <div class="card shadow-lg">
+            <div class="card-header">
+                <h3>Crear Prioridades</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    @* PrioridadId *@
+                    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-6 col-xl-4">
+                        <!-- Aquí debes agregar el input para 'PrioridadId' -->
+                    </div>
+                </div>
+                @* Descripcion *@
+                <div class="mb-3">
+                    <!-- Aquí debes agregar el input para 'Descripcion' -->
+                </div>
+            </div>
+            <div class="card-footer d-flex justify-content-between">
+                <button type="button" class="btn btn-primary" @onclick="GuardarCambios">
+                    <span>Crear <i class="bi bi-file-earmark" /></span>
+                </button>
+                <a href="/DetailPrioridades" class="btn btn-secondary">Volver</a>
+            </div>
+        </div>
+    </div>
+</EditForm>

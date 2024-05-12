@@ -1,0 +1,36 @@
+﻿@page "/Tecnicos"
+@inject TecnicoService tecnicoService
+@using RegistroTecnicos.Models
+
+<PageTitle>Técnicos</PageTitle>
+
+<h1>Listado de Técnicos</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>TecnicoID</th>
+            <th>Nombres</th>
+            <th>SueldoHora</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var tecnico in ListaTecnicos)
+        {
+            <tr>
+                <td>@tecnico.TecnicoId</td>
+                <td>@tecnico.Nombres</td>
+                <td>@tecnico.SueldoHora</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private List<Tecnico> ListaTecnicos = new List<Tecnico>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        ListaTecnicos = await tecnicoService.ListarTecnicos();
+    }
+}
