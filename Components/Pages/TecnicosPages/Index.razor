@@ -14,7 +14,7 @@
                 <select @bind="filtro" class="form-select">
                     <option value="id">ID</option>
                     <option value="nombre">Nombre</option>
-                    <!-- Agrega más opciones de filtro según sea necesario -->
+                    
                 </select>
             </div>
             <div class="col-md-6">
@@ -36,7 +36,6 @@
             <tr>
                 <th>TecnicoId</th>
                 <th>Nombre</th>
-                <!-- Agrega más encabezados de columna según sea necesario -->
                 <th>Ver</th>
                 <th>Editar</th>
                 <th>Eliminar</th>
@@ -72,7 +71,7 @@
 
 
 @code {
-    public List<Tecnico> ListaTecnicos = new List<Tecnico>();
+    public List<Models.Tecnicos> ListaTecnicos = new global::System.Collections.Generic.List<global::RegistroTecnicos.Models.Tecnicos>();
     private string filtro = "id";
     private string valorFiltro = "";
 

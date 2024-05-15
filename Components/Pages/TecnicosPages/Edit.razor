@@ -38,7 +38,7 @@
 @code {
     [Parameter]
     public int TecnicoId { get; set; }
-    public Tecnico Tecnico { get; set; } = new Tecnico();
+    public Models.Tecnicos Tecnico { get; set; } = new Models.Tecnicos();
     private bool Existe = false;
 
     protected override async Task OnInitializedAsync()
@@ -51,7 +51,7 @@
 
     public void Nuevo()
     {
-        Tecnico = new Tecnico();
+            Tecnico = new Models.Tecnicos();
         Existe = false;
     }
 

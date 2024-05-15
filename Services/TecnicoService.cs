@@ -21,19 +21,19 @@ namespace RegistroTecnicos.Services
             return await _context.Tecnicos.AnyAsync(t => t.Nombres == nombre);
         }
 
-        public async Task InsertarTecnico(Tecnico tecnico)
+        public async Task InsertarTecnico(Tecnicos tecnico)
         {
             _context.Add(tecnico);
             await GuardarCambios();
         }
 
-        public async Task ModificarTecnico(Tecnico tecnico)
+        public async Task ModificarTecnico(Tecnicos tecnico)
         {
             _context.Update(tecnico);
             await GuardarCambios();
         }
 
-        public async Task<bool> GuardarTecnico(Tecnico tecnico)
+        public async Task<bool> GuardarTecnico(Tecnicos tecnico)
         {
             if (tecnico.TecnicoId == 0)
             {
@@ -62,17 +62,17 @@ namespace RegistroTecnicos.Services
             }
         }
 
-        public async Task<Tecnico> BuscarTecnico(int tecnicoId)
+        public async Task<Tecnicos> BuscarTecnico(int tecnicoId)
         {
             return await _context.Tecnicos.FindAsync(tecnicoId);
         }
 
-        public async Task<List<Tecnico>> ListarTecnicos()
+        public async Task<List<Tecnicos>> ListarTecnicos()
         {
             return await _context.Tecnicos.ToListAsync();
         }
 
-        Task ITecnicoService.GuardarTecnico(Tecnico tecnico)
+        Task ITecnicoService.GuardarTecnico(Tecnicos tecnico)
         {
             throw new NotImplementedException();
         }

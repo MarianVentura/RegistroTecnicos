@@ -1,7 +1,10 @@
-﻿namespace RegistroTecnicos.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace RegistroTecnicos.Models
 {
-    public class Tecnico
+    public class Tecnicos
     {
+        [Key]
         public int TecnicoId { get; set; }
         public string Nombres { get; set; }
 

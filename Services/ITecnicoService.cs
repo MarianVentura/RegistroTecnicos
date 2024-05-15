@@ -7,14 +7,14 @@ namespace RegistroTecnicos.Services
     public interface ITecnicoService
     {
         Task<bool> ExisteTecnico(string nombre);
-        Task InsertarTecnico(Tecnico tecnico);
-        Task ModificarTecnico(Tecnico tecnico);
-        Task GuardarTecnico(Tecnico tecnico);
+        Task InsertarTecnico(Tecnicos tecnico);
+        Task ModificarTecnico(Tecnicos tecnico);
+        Task GuardarTecnico(Tecnicos tecnico);
         Task GuardarCambios();
         Task EliminarTecnico(int tecnicoId);
 
-        Task<Tecnico> BuscarTecnico(int tecnicoId);
-        Task<List<Tecnico>> ListarTecnicos();
+        Task<Tecnicos> BuscarTecnico(int tecnicoId);
+        Task<List<Tecnicos>> ListarTecnicos();
 
     }
 }
