@@ -3,9 +3,9 @@ using RegistroTecnicos.Models;
 
 namespace RegistroTecnicos.DAL
 {
-    public class ApplicationDbContext : DbContext
+    public class Contexto : DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
+        public Contexto(DbContextOptions<Contexto> options) : base(options) { }
 
         public DbSet<Tecnicos> Tecnicos { get; set; }
     }

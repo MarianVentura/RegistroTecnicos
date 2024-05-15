@@ -9,7 +9,7 @@ using RegistroTecnicos.DAL;
 
 namespace RegistroTecnicos.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(Contexto))]
     [Migration("20240512175411_Inicial Designer")]
     partial class InicialDesigner
     {

@@ -9,7 +9,7 @@ using RegistroTecnicos.DAL;
 
 namespace RegistroTecnicos.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(Contexto))]
     [Migration("20240512175343_Inicial")]
     partial class Inicial
     {
