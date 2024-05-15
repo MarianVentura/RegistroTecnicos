@@ -4,17 +4,22 @@
 @rendermode InteractiveServer
 
 <EditForm Model="ListaTecnicos" class="border shadow-lg p-3 rounded">
+
+    <Toasts class="p-3" Messages="messages" Placement="ToastsPlacement.TopRight" />
+
     <div class="card-header bg-primary text-white text-center py-2 rounded">
-        <h3 style="font-weight: bold;" class="mb-0 font-weight-bold">Consulta Técnicos</h3>
+        <h3 style="font-weight: bold"; class="mb-0 font-weight-bold>"Consulta Técnicos</h3>
     </div>
     <div class="card-body">
-        <div class="row mb-3 align-items-end">
-            <div class="col-md-3">
+        <Button Color="ButtonColor.Primary"
+                @onclick="() => ShowMessage(ToastType.Primary)"> Primary Toast</Button>
+
+        <div class="top-row mb-3 aling-items-end">
+            <div class="col-mb-3">
                 <label for="Filtro" class="form-label">Filtrar por:</label>
                 <select @bind="filtro" class="form-select">
                     <option value="id">ID</option>
-                    <option value="nombre">Nombre</option>
-                    
+                    <option value="descripcion">Descripci&oacuten</option>
                 </select>
             </div>
             <div class="col-md-6">
@@ -27,40 +32,39 @@
                 </div>
             </div>
             <div class="col-md-3 text-end">
-                <a href="/Tecnico/Create" class="btn btn-success" type="button"><span class="bi bi-floppy"></span> Crear </a>
+                <a href="/tecnico/Create" class="btn btn-sucess" type="button"><span class="bi bi-floppy"></span> Crear </a>
             </div>
         </div>
     </div>
     <table class="table table-bordered text-center">
-        <thead class="bg-primary text-white">
-            <tr>
+        <thread class="bg-primary text-white">
+            <tr> 
                 <th>TecnicoId</th>
-                <th>Nombre</th>
+                <th>Nombres</th>
+                <th>SueldoHora</th>
+                <th>Descripci&oacute;n</th>
                 <th>Ver</th>
                 <th>Editar</th>
                 <th>Eliminar</th>
             </tr>
-        </thead>
+        </thread>
         <tbody>
             @foreach (var tecnico in ListaTecnicos)
             {
                 <tr>
                     <td>@tecnico.TecnicoId</td>
                     <td>@tecnico.Nombres</td>
-                    <!-- Agrega más columnas según sea necesario -->
+                    <td>@tecnico.SueldoHora</td>
+                    <td>@tecnico.Descripcion</td>
                     <td>
-                        <a href="/Tecnico/Details/@tecnico.TecnicoId" style="border: none; background-color: transparent;" class="btn-detalle">
-                            <span class="bi bi-info-circle-fill" style="font-size: 2rem;"></span>
+                        <a class="btn btn-outline-primary" href="Tecnico/Details/@tecnico.TecnicoId">
+                            <span class="bi bi-marker-tip"></span>    
                         </a>
                     </td>
+
                     <td>
-                        <a href="/Tecnico/Edit/@tecnico.TecnicoId" style="border: none; background-color: transparent;" class="btn-editar">
-                            <span class="bi bi-marker-tip" style="font-size: 2rem;"></span>
-                        </a>
-                    </td>
-                    <td>
-                        <a href="/Tecnico/Delete/@tecnico.TecnicoId" style="border: none; background-color: transparent;" class="btn-eliminar">
-                            <span class="bi bi-dash-circle-fill" style="font-size: 2rem;"></span>
+                        <a class="btn btn-outline-warning" href="/tecnico/Delete/@tecnico.TecnicoId">
+                            <span class="bi bi-dash-circle-fill"></span>    
                         </a>
                     </td>
                 </tr>
@@ -69,15 +73,34 @@
     </table>
 </EditForm>
 
-
 @code {
-    public List<Models.Tecnicos> ListaTecnicos = new global::System.Collections.Generic.List<global::RegistroTecnicos.Models.Tecnicos>();
-    private string filtro = "id";
+    public Tecnicos tecnico = new Tecnicos();
+
+    public List<Tecnicos> ListaTecnicos = new List<Tecnicos>();
+
+    List<ToastMessage> messages = new List<ToastMessage>();
+
+    private string filtro = "Id";
     private string valorFiltro = "";
+
+    private void ShowMessage(ToastType toastType) => messages.Add(CreateToastMessage(toastType));
+
+    private ToastMessage CreateToastMessage(ToastType toastType) => new ToastMessage
+        {
+            Type = toastType,
+            Title = "Registro de Técnicos",
+            HelpText = $"{DateTime.Now}",
+            Message = $"Hello, world! This is a toast message. DateTime: {DateTime.Now}",
+        };
 
     protected override async Task OnInitializedAsync()
     {
-        ListaTecnicos = await TecnicoService.ListarTecnicos();
+        ListaTecnicos = await TecnicoService.Listar(c => true);
+    }
+
+    public async Task Guardar()
+    {
+        var guardo = await TecnicoService.Guardar(tecnico);
     }
 
     private async Task Buscar()
@@ -86,17 +109,18 @@
         {
             if (filtro == "id" && int.TryParse(valorFiltro, out int TecnicoId))
             {
-                ListaTecnicos = (await TecnicoService.ListarTecnicos()).Where(t => t.TecnicoId == TecnicoId).ToList();
+                ListaTecnicos = await TecnicoService.Listar(p => p.TecnicoId == TecnicoId);
             }
-            else if (filtro == "nombre")
+            else if (filtro == "descripcion")
             {
-                ListaTecnicos = (await TecnicoService.ListarTecnicos()).Where(t => t.Nombres == valorFiltro).ToList();
+                ListaTecnicos = await TecnicoService.Listar(p => p.Descripcion == valorFiltro);
             }
-            // Agrega más condiciones según sea necesario para otros filtros
         }
         else
         {
-            ListaTecnicos = await TecnicoService.ListarTecnicos();
+            ListaTecnicos = await TecnicoService.Listar(t => true);
         }
+
     }
 }
+

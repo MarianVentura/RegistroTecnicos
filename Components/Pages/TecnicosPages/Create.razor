@@ -1,14 +1,13 @@
 ﻿@page "/Create"
 @page "/Create/{prioridadId:int}"
 @inject TecnicoService TecnicoService
-@inject ITecnicoService ITecnicoService
 @inject NavigationManager navigationManager
 @inject IJSRuntime jsRuntime
 
 
 @code {
     
-    Tecnico Tecnico = new Models.Tecnicos();
+    Tecnicos Tecnico = new Models.Tecnicos();
 
     
     private void GuardarCambios()
