@@ -18,7 +18,7 @@ namespace RegistroTecnicos.Services
 
         public async Task<bool> Guardar(Tecnicos tecnico)
         {
-            if(!await Existe(tecnico.TecnicoId))
+            if (!await Existe(tecnico.TecnicoId))
                 return await Insertar(tecnico);
             else
                 return await Modificar(tecnico);
@@ -27,7 +27,7 @@ namespace RegistroTecnicos.Services
         private async Task<bool> Insertar(Tecnicos tecnico)
         {
             _context.Tecnicos.Add(tecnico);
-            return await _context.SaveChangesAsync() >0;
+            return await _context.SaveChangesAsync() > 0;
         }
 
         private async Task<bool> Modificar(Tecnicos tecnico)
