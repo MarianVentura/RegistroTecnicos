@@ -9,5 +9,10 @@ namespace RegistroTecnicos.Models
         public string? Nombres { get; set; }
         
         public decimal SueldoHora { get; set; }
+        public int TipoId { get; set; }
+        public string? Descripcion { get; set; }
+
     }
+
+ 
 }

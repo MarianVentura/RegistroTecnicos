@@ -1,30 +1,18 @@
-﻿@page "/Create"
-@page "/Create/{tecnicoId:int}"
+﻿@page "/Tecnico/Create"
+@page "/Tecnico/Create/{tecnicoId:int}"
 @inject TecnicoService TecnicoService
 @inject NavigationManager navigationManager
 @inject IJSRuntime jsRuntime
-@rendermode InteractiveServer
 
 <EditForm Model="@tecnico" OnValidSubmit="Guardar">
     <DataAnnotationsValidator />
+
     <div class="card shadow-lg border-0 rounded" style="background-color: #f8f9fa;">
         <div class="card-header bg-primary text-white" style="text-align: center;">
             <h3><i class="fas fa-clipboard-list"></i> Registro de Técnicos</h3>
         </div>
 
         <div class="card-body">
-            @* TecnicoId *@
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label for="TecnicoId" class="form-label">TecnicoId:</label>
-                    <div class="input-group">
-                        <div style="width: 40%; height: 1em;">
-                            <InputNumber @bind-Value="tecnico.TecnicoId" class="form-control" style="font-size: 0.8em;" aria-describedby="BotonBuscar" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             @*Nombres*@
             <div class="mb-3">
                 <label for="Nombres" class="form-label">Nombres:</label>
@@ -39,8 +27,16 @@
                 <ValidationMessage For="@(() => tecnico.SueldoHora)" />
             </div>
 
-            @* Descripcion *@
-            
+            @* Tipo de Técnico *@
+            <div class="mb-3">
+                <label for="TipoId" class="form-label">Tipo de Técnico:</label>
+                <select @bind="@tecnico.TipoId" class="form-control">
+                    @foreach (var tipo in listaTipos)
+                    {
+                        <option value="@tipo.TipoId">@tipo.Descripcion</option>
+                    }
+                </select>
+            </div>
 
         </div>
 
@@ -60,6 +56,13 @@
 
     public Tecnicos tecnico { get; set; } = new Tecnicos();
     private bool Existe = false;
+    private List<TipoTecnico> listaTipos = new List<TipoTecnico>(); 
+
+    protected override async Task OnInitializedAsync()
+    {
+        
+        listaTipos = await TecnicoService.ListarTipos(t => true);
+    }
 
     public void Nuevo()
     {
@@ -80,5 +83,13 @@
             Nuevo();
         }
     }
+
+    private async Task<bool> Validar()
+    {
+        
+        return true;
+    }
+
+    // Otras funciones como Buscar y Eliminar pueden implementarse de manera similar
 
 }
