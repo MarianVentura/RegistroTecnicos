@@ -74,6 +74,40 @@ namespace RegistroTecnicos.Services
                 .ToListAsync();
         }
 
+        public async Task<bool> GuardarTipo(TipoTecnico tipoTecnico)
+        {
+            if (!await ExisteTipo(tipoTecnico.Descripcion))
+                return await InsertarTipo(tipoTecnico);
+            else
+                return await ModificarTipo(tipoTecnico);
+        }
+
+        private async Task<bool> InsertarTipo(TipoTecnico tipoTecnico)
+        {
+            _context.TipoTecnicos.Add(tipoTecnico);
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        private async Task<bool> ModificarTipo(TipoTecnico tipoTecnico)
+        {
+            _context.Update(tipoTecnico);
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> ExisteTipo(string descripcion)
+        {
+            return await _context.TipoTecnicos.AnyAsync(t => t.Descripcion.Equals(descripcion));
+        }
+
+        public async Task<List<TipoTecnico>> ListarTipos(Expression<Func<TipoTecnico, bool>> criterio)
+        {
+            return await _context.TipoTecnicos
+                .AsNoTracking()
+                .Where(criterio)
+                .ToListAsync();
+        }
+
+
     }
 }
 

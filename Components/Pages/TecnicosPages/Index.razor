@@ -55,7 +55,6 @@
                     <td>@tecnico.TecnicoId</td>
                     <td>@tecnico.Nombres</td>
                     <td>@tecnico.SueldoHora</td>
-                    <td>@tecnico.Descripcion</td>
                     <td>
                         <a class="btn btn-outline-primary" href="Tecnico/Details/@tecnico.TecnicoId">
                             <span class="bi bi-marker-tip"></span>    
@@ -111,10 +110,7 @@
             {
                 ListaTecnicos = await TecnicoService.Listar(p => p.TecnicoId == TecnicoId);
             }
-            else if (filtro == "descripcion")
-            {
-                ListaTecnicos = await TecnicoService.Listar(p => p.Descripcion == valorFiltro);
-            }
+         
         }
         else
         {
