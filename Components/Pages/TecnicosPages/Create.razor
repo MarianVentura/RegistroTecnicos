@@ -3,47 +3,77 @@
 @inject TecnicoService TecnicoService
 @inject NavigationManager navigationManager
 @inject IJSRuntime jsRuntime
-
-
-@code {
-    
-    Tecnicos Tecnico = new Models.Tecnicos();
-
-    
-    private void GuardarCambios()
-    {
-        
-    }
-}
-
 @rendermode InteractiveServer
 
-<PageTitle>Registro de Prioridades</PageTitle>
-<EditForm Model="Tecnico" OnValidSubmit="GuardarCambios" FormName="prioridadForm">
+<EditForm Model="@tecnico" OnValidSubmit="Guardar">
     <DataAnnotationsValidator />
-    <div class="container">
-        <div class="card shadow-lg">
-            <div class="card-header">
-                <h3>Crear Prioridades</h3>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    @* PrioridadId *@
-                    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-6 col-xl-4">
-                        <!-- Aquí debes agregar el input para 'PrioridadId' -->
+    <div class="card shadow-lg border-0 rounded" style="background-color: #f8f9fa;">
+        <div class="card-header bg-primary text-white" style="text-align: center;">
+            <h3><i class="fas fa-clipboard-list"></i> Registro de Técnicos</h3>
+        </div>
+
+        <div class="card-body">
+            @* TecnicoId *@
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="TecnicoId" class="form-label">TecnicoId:</label>
+                    <div class="input-group">
+                        <div style="width: 40%; height: 1em;">
+                            <InputNumber @bind-Value="tecnico.TecnicoId" class="form-control" style="font-size: 0.8em;" aria-describedby="BotonBuscar" />
+                        </div>
                     </div>
                 </div>
-                @* Descripcion *@
-                <div class="mb-3">
-                    <!-- Aquí debes agregar el input para 'Descripcion' -->
-                </div>
             </div>
-            <div class="card-footer d-flex justify-content-between">
-                <button type="button" class="btn btn-primary" @onclick="GuardarCambios">
-                    <span>Crear <i class="bi bi-file-earmark" /></span>
-                </button>
-                <a href="/DetailPrioridades" class="btn btn-secondary">Volver</a>
+
+            @* Descripcion *@
+            <div class="mb-3">
+                <label for="Descripcion" class="form-label">Descripción:</label>
+                <InputText @bind-Value="tecnico.Descripcion" class="form-control" />
+                <ValidationMessage For="@(() => tecnico.Descripcion)" />
+            </div>
+
+        </div>
+
+        <div class="card-footer bg-light d-flex justify-content-center mt-3">
+            <div class="btn-group">
+                <button type="button" class="btn btn-outline-primary ml-2" @onclick="Nuevo"><span class="bi bi-plus"></span> Nuevo </button>
+                <button type="submit" class="btn btn-outline-success ml-2"><span class="bi bi-check-circle-fill"></span> Guardar </button>
+                <a href="/Tecnico/Index/" class="btn btn-outline-danger ml-2"><span class="bi bi-arrow-bar-left"></span> Retroceder </a>
             </div>
         </div>
     </div>
 </EditForm>
+
+@code {
+    [Parameter]
+    public int TecnicoId { get; set; }
+
+    public Tecnicos tecnico { get; set; } = new Tecnicos();
+    private bool Existe = false;
+
+    public void Nuevo()
+    {
+        tecnico = new Tecnicos();
+        Existe = false;
+    }
+
+    public async Task Guardar()
+    {
+        if (!await Validar())
+        {
+            return;
+        }
+
+        var guardo = await TecnicoService.Guardar(tecnico);
+        if (guardo)
+        {
+            Nuevo();
+        }
+    }
+
+    public async Task<bool> Validar()
+    {
+        Existe = await TecnicoService.Existe(tecnico.Descripcion);
+        return !Existe;
+    }
+}
