@@ -64,12 +64,12 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        Tecnico = await TecnicoService.BuscarTecnico(TecnicoId);
+        Tecnico = await TecnicoService.Buscar(TecnicoId);
     }
 
     public async Task EliminarTecnico()
     {
-        await TecnicoService.EliminarTecnico(TecnicoId);
+        await TecnicoService.Eliminar(TecnicoId);
         Volver();
 
     }

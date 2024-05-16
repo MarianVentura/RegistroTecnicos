@@ -2,9 +2,9 @@
 @page "/Tecnico/Edit/{TecnicoId:int}"
 @inject TecnicoService TecnicoService
 @inject NavigationManager NavigationManager
-@using RegistroTecnicos.Models
+@rendermode InteractiveServer
 
-<EditForm Model="Tecnico" OnValidSubmit="Guardar">
+<EditForm Model="@tecnico" OnValidSubmit="Guardar">
     <DataAnnotationsValidator />
     <div class="card shadow-lg border-0 rounded" style="background-color: #f8f9fa;">
         <div class="card-header bg-primary text-white" style="text-align: center;">
@@ -13,13 +13,28 @@
 
         <div class="card-body">
 
-            <div class="mb-3">
-                <label for="Nombres" class="form-label">Nombres:</label>
-                <InputText @bind-Value="Tecnico.Nombres" class="form-control" />
-                <ValidationMessage For="@(() => Tecnico.Nombres)" />
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="TecnicoId" class="form-label">TecnicoId:</label>
+                    <div class="input-group">
+                        <div style="width: 40%; height: 1em;">
+                            <InputNumber @bind-Value="tecnico.TecnicoId" class="form-control" style="font-size: 0.8em;" aria-describedby="BotonBuscar" />
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <!-- Puedes agregar más campos según sea necesario -->
+            <div class="mb-3">
+                <label for="Nombres" class="form-label">Nombres:</label>
+                <InputText @bind-Value="tecnico.Nombres" class="form-control" />
+                <ValidationMessage For="@(() => tecnico.Nombres)" />
+            </div>
+
+            <div class="mb-3">
+                <label for="Descripcion" class="form-label">Descripción:</label>
+                <InputText @bind-Value="tecnico.Descripcion" class="form-control" />
+                <ValidationMessage For="@(() => tecnico.Descripcion)" />
+            </div>
 
         </div>
 
@@ -28,52 +43,67 @@
                 <button type="button" class="btn btn-outline-primary ml-2" @onclick="Nuevo"><span class="bi bi-plus"></span> Nuevo </button>
                 <button type="submit" class="btn btn-outline-success ml-2"><span class="bi bi-check-circle-fill"></span> Guardar </button>
                 <button type="button" class="btn btn-outline-danger ml-2" @onclick="Eliminar"><span class="bi bi-trash-fill"></span> Eliminar </button>
-                <a type="button" href="/Tecnico/Index/" class="btn btn-outline-danger"><span class="bi bi-arrow-bar-left"></span> Retroceder </a>
+                <a href="/Tecnico/Index/" class="btn btn-outline-danger ml-2"><span class="bi bi-arrow-bar-left"></span> Retroceder </a>
             </div>
         </div>
     </div>
 </EditForm>
 
-
 @code {
     [Parameter]
-    public int TecnicoId { get; set; }
-    public Models.Tecnicos Tecnico { get; set; } = new Models.Tecnicos();
+    public int? TecnicoId { get; set; }
+    public Tecnicos tecnico { get; set; } = new Tecnicos();
     private bool Existe = false;
 
     protected override async Task OnInitializedAsync()
     {
-        if (TecnicoId != 0)
+        if (TecnicoId.HasValue)
         {
+    
+            tecnico.TecnicoId = TecnicoId.Value;
             await Buscar();
         }
     }
 
+
     public void Nuevo()
     {
-            Tecnico = new Models.Tecnicos();
+        tecnico = new Tecnicos();
         Existe = false;
     }
 
     public async Task Buscar()
     {
-        Existe = false;
-        Tecnico = await TecnicoService.BuscarTecnico(TecnicoId);
+        var tecnicoEncontrado = await TecnicoService.Buscar(tecnico.TecnicoId);
 
-        if (Tecnico == null)
+        if (tecnicoEncontrado != null)
         {
-            Nuevo();
+            tecnico = tecnicoEncontrado;
         }
+        //else
+        //{
+            //notificationService.ShowNotification(
+                //titulo: "Error de Búsqueda",
+                //mensaje: "Registro no encontrado",
+                //NotificationSeverity.Error);
+        //}
+    }
+
+    public async Task<bool> Validar()
+    {
+        //TODO: cambiar por Any y llevarlo al servicio.
+        Existe = await TecnicoService.Existe(tecnico.TecnicoId, tecnico.Descripcion);
+        return !Existe;
     }
 
     public async Task Guardar()
     {
-        if (Validar())
+        if (!await Validar())
         {
             return;
         }
 
-        var guardo = await TecnicoService.GuardarTecnico(Tecnico);
+        var guardo = await TecnicoService.Guardar(tecnico);
         if (guardo)
         {
             Nuevo();
@@ -82,15 +112,7 @@
 
     public async Task Eliminar()
     {
-        await TecnicoService.EliminarTecnico(Tecnico.TecnicoId);
+        var eliminado = await TecnicoService.Eliminar(tecnico.TecnicoId);
         Nuevo();
-    }
-
-    public bool Validar()
-    {
-        // Aquí puedes agregar lógica de validación según tus necesidades
-        // Por ejemplo, puedes verificar si ya existe un técnico con el mismo nombre
-
-        return false; // En este ejemplo, siempre retornamos false
     }
 }
