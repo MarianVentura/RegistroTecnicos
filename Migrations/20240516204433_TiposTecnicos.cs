@@ -5,36 +5,36 @@
 namespace RegistroTecnicos.Migrations
 {
     /// <inheritdoc />
-    public partial class TipoTecnico : Migration
+    public partial class TiposTecnicos : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterColumn<string>(
-                name: "Nombres",
+                name: "Descripcion",
                 table: "Tecnicos",
                 type: "TEXT",
                 nullable: true,
                 oldClrType: typeof(string),
                 oldType: "TEXT");
 
-            migrationBuilder.AddColumn<string>(
-                name: "Descripcion",
+            migrationBuilder.AddColumn<int>(
+                name: "TipoId",
                 table: "Tecnicos",
-                type: "TEXT",
+                type: "INTEGER",
                 nullable: false,
-                defaultValue: "");
+                defaultValue: 0);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Descripcion",
+                name: "TipoId",
                 table: "Tecnicos");
 
             migrationBuilder.AlterColumn<string>(
-                name: "Nombres",
+                name: "Descripcion",
                 table: "Tecnicos",
                 type: "TEXT",
                 nullable: false,

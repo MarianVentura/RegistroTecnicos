@@ -16,7 +16,7 @@ namespace RegistroTecnicos.Services
             _context = context;
         }
 
-        public async Task<bool> Guardar(Tecnicos tecnico)
+        public async Task<bool> Guardar(Tecnico tecnico)
         {
             if (!await Existe(tecnico.TecnicoId))
                 return await Insertar(tecnico);
@@ -24,13 +24,13 @@ namespace RegistroTecnicos.Services
                 return await Modificar(tecnico);
         }
 
-        private async Task<bool> Insertar(Tecnicos tecnico)
+        private async Task<bool> Insertar(Tecnico tecnico)
         {
             _context.Tecnicos.Add(tecnico);
             return await _context.SaveChangesAsync() > 0;
         }
 
-        private async Task<bool> Modificar(Tecnicos tecnico)
+        private async Task<bool> Modificar(Tecnico tecnico)
         {
             _context.Update(tecnico);
             return await _context.SaveChangesAsync() > 0;
@@ -59,22 +59,23 @@ namespace RegistroTecnicos.Services
             return tecnico > 0;
         }
 
-        public async Task<Tecnicos?> Buscar(int id)
+        public async Task<Tecnico> Buscar(int tecnicoId)
         {
-            return await _context.Tecnicos
-                .Include(t => t.TipoId)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(t => t.TecnicoId == id);
+            return await _context.Tecnicos.Include(t => t.Tipo).FirstOrDefaultAsync(t => t.TecnicoId == tecnicoId);
         }
 
-        public async Task<List<Tecnicos>> Listar(Expression<Func<Tecnicos, bool>> criterio)
+
+
+
+        public async Task<List<Tecnico>> Listar(Expression<Func<Tecnico, bool>> criterio)
         {
             return await _context.Tecnicos
-                .Include(t => t.TipoId)
+                .Include(t => t.TipoId) 
                 .AsNoTracking()
                 .Where(criterio)
                 .ToListAsync();
         }
+
     }
 }
 

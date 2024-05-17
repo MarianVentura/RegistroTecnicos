@@ -41,9 +41,8 @@
             <tr> 
                 <th>TecnicoId</th>
                 <th>Nombres</th>
-                <th>SueldoHora</th>
-                <th>Descripci&oacute;n</th>
-                <th>Ver</th>
+                <th>Sueldo por hora</th>
+                <th>Tipo de técnico</th>
                 <th>Editar</th>
                 <th>Eliminar</th>
             </tr>
@@ -55,8 +54,7 @@
                     <td>@tecnico.TecnicoId</td>
                     <td>@tecnico.Nombres</td>
                     <td>@tecnico.SueldoHora</td>
-                    <td>@tecnico.TipoId</td>
-                    <td>@tecnico.Descripcion</td>
+                    <td>@tecnico.Tipo.Descripcion</td>
                     <td>
                         <a class="btn btn-outline-primary" href="Tecnico/Details/@tecnico.TecnicoId">
                             <span class="bi bi-marker-tip"></span>    
@@ -75,14 +73,18 @@
 </EditForm>
 
 @code {
-    public Tecnicos tecnico = new Tecnicos();
+    public Tecnico tecnico = new Tecnico();
 
-    public List<Tecnicos> ListaTecnicos = new List<Tecnicos>();
+    public List<Tecnico> ListaTecnicos = new List<Tecnico>();
 
     List<ToastMessage> messages = new List<ToastMessage>();
 
     private string filtro = "Id";
     private string valorFiltro = "";
+
+    public Index()
+    {
+    }
 
     private void ShowMessage(ToastType toastType) => messages.Add(CreateToastMessage(toastType));
 

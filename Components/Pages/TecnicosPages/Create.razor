@@ -29,15 +29,15 @@
 
             @* Tipo de Técnico *@
             <div class="mb-3">
-                <label for="TipoId" class="form-label">Tipo de Técnico:</label>
-                <select @bind="@tecnico.TipoId" class="form-control">
-                    @foreach (var tipo in listaTipos)
+                <label for="tipoId">Tipo de técnico:</label>
+                <!-- Lista desplegable -->
+                <InputSelect @bind-Value="tecnico.TipoId">
+                    @foreach (var tipo in tiposTecnicos)
                     {
                         <option value="@tipo.TipoId">@tipo.Descripcion</option>
                     }
-                </select>
+                </InputSelect>
             </div>
-
         </div>
 
         <div class="card-footer bg-light d-flex justify-content-center mt-3">
@@ -54,19 +54,14 @@
     [Parameter]
     public int TecnicoId { get; set; }
 
-    public Tecnicos tecnico { get; set; } = new Tecnicos();
+    public Tecnico tecnico { get; set; } = new Tecnico();
     private bool Existe = false;
-    private List<TipoTecnico> listaTipos = new List<TipoTecnico>(); 
+    private List<TipoTecnico> tiposTecnicos { get; set; } = new List<TipoTecnico>();
 
-    protected override async Task OnInitializedAsync()
-    {
-        
-        listaTipos = await TecnicoService.ListarTipos(t => true);
-    }
 
     public void Nuevo()
     {
-        tecnico = new Tecnicos();
+        tecnico = new Tecnico();
         Existe = false;
     }
 
@@ -84,12 +79,9 @@
         }
     }
 
-    private async Task<bool> Validar()
+    public async Task<bool> Validar()
     {
-        
-        return true;
+        Existe = await TecnicoService.Existe(Tecnico.Descripcion);
+        return !Existe;
     }
-
-    // Otras funciones como Buscar y Eliminar pueden implementarse de manera similar
-
 }

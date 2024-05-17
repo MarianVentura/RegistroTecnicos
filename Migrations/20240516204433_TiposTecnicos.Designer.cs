@@ -10,8 +10,8 @@ using RegistroTecnicos.DAL;
 namespace RegistroTecnicos.Migrations
 {
     [DbContext(typeof(Contexto))]
-    [Migration("20240516190414_TipoTecnico")]
-    partial class TipoTecnico
+    [Migration("20240516204433_TiposTecnicos")]
+    partial class TiposTecnicos
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -26,7 +26,6 @@ namespace RegistroTecnicos.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Descripcion")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Nombres")
@@ -34,6 +33,9 @@ namespace RegistroTecnicos.Migrations
 
                     b.Property<decimal>("SueldoHora")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("TipoId")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("TecnicoId");
 

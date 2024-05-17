@@ -23,7 +23,6 @@ namespace RegistroTecnicos.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Descripcion")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Nombres")
@@ -31,6 +30,9 @@ namespace RegistroTecnicos.Migrations
 
                     b.Property<decimal>("SueldoHora")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("TipoId")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("TecnicoId");
 
