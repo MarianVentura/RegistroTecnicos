@@ -1,30 +1,33 @@
-﻿@page "/Tecnicos/Details"
-@page "/Tecnicos/Details/{TecnicoId:int}"
-@inject TecnicoService TecnicoService
+﻿@page "/Tecnico/Details/{TecnicoId:int}"
+@using RegistroTecnicos.Service
+@using RegistrodeTecnicos.Models
+@using RegistrodeTecnicos.Service
+@inject TecnicoService tecnicoService
+@inject TipoTecnicoService tipoTecnicoService
 @inject NavigationManager navigationManager
 @rendermode InteractiveServer
 
-<PageTitle>Detalles del Técnico</PageTitle>
+<PageTitle>Detalles del t&eacute;cnico</PageTitle>
 
-@if (Tecnico != null)
+@if (tecnico != null)
 {
     <div class="container">
         <div class="card shadow-header">
-            <div class="card-header bg-primary text-white text-center py-2 rounded">
-                <h3 class="text-center"><strong>Detalles del Técnico</strong></h3>
+            <div class="card-header  bg-primary text-white text-center py-2 rounded">
+                <h3 class="text-center"><strong>Detalles del t&eacute;cnico</strong></h3>
             </div>
             <div class="container">
                 <div class="row">
                     <div class="col-md-6">
+
                         <div class="card-body">
                             <ul class="list-unstyled">
-                                <li><strong>TecnicoId:</strong> @Tecnico.TecnicoId</li>
-                                <li><strong>Nombres:</strong> @Tecnico.Nombres</li>
-                                <li><strong>SueldoHora:</strong> @Tecnico.SueldoHora</li>
-                                <li><strong>Tipo de Técnico:</strong> @Tecnico.Tipo.Descripcion</li>
-
+                                <li><strong>T&eacute;cnicoId:</strong> @tecnico.TecnicoId</li>
+                                <li><strong>Nombre:</strong> @tecnico.Nombre</li>
+                                <li><strong>SueldoHora:</strong> @tecnico.Sueldohora</li>
                             </ul>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -36,21 +39,21 @@
 }
 else
 {
-    <p>Técnico no encontrado.</p>
+    <p>Tecnico no encontrado.</p>
 }
 
 @code {
     [Parameter]
     public int TecnicoId { get; set; }
-    public Tecnico? Tecnico { get; set; } = new Tecnico();
+    public Tecnicos? tecnico { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        Tecnico = await TecnicoService.Buscar(TecnicoId);
+        tecnico = await tecnicoService.Buscar(TecnicoId);
     }
 
     public void Volver()
     {
-        navigationManager.NavigateTo("/Tecnicos/Index");
+        navigationManager.NavigateTo("/Tecnico/index");
     }
 }

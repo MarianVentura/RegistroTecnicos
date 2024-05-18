@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using RegistroTecnicos.Models;
+using RegistrodeTecnicos.Models;
 
 namespace RegistroTecnicos.DAL
 {
@@ -7,9 +7,8 @@ namespace RegistroTecnicos.DAL
     {
         public Contexto(DbContextOptions<Contexto> options) : base(options) { }
 
-        public DbSet<TipoTecnico> TiposTecnicos { get; set; } 
-        public DbSet<Tecnico> Tecnicos { get; set; }
-
-
+        public DbSet<Tecnicos> Tecnicos { get; set; }
+        public DbSet<TipoTecnicos> TipoTecnicos { get; set; }
+     
     }
 }

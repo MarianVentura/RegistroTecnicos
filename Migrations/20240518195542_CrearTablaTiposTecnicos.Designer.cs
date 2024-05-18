@@ -10,36 +10,28 @@ using RegistroTecnicos.DAL;
 namespace RegistroTecnicos.Migrations
 {
     [DbContext(typeof(Contexto))]
-    [Migration("20240516204433_TiposTecnicos")]
-    partial class TiposTecnicos
+    [Migration("20240518195542_CrearTablaTiposTecnicos")]
+    partial class CrearTablaTiposTecnicos
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.4");
+            modelBuilder.HasAnnotation("ProductVersion", "8.0.5");
 
-            modelBuilder.Entity("RegistroTecnicos.Models.Tecnicos", b =>
+            modelBuilder.Entity("RegistrodeTecnicos.Models.TipoTecnicos", b =>
                 {
-                    b.Property<int>("TecnicoId")
+                    b.Property<int>("TipoId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Descripcion")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Nombres")
-                        .HasColumnType("TEXT");
+                    b.HasKey("TipoId");
 
-                    b.Property<decimal>("SueldoHora")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("TipoId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("TecnicoId");
-
-                    b.ToTable("Tecnicos");
+                    b.ToTable("TiposTecnicos");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,0 +1,82 @@
+﻿@page "/TipoTecnico/Create"
+@using RegistroTecnicos.Service
+@using RegistrodeTecnicos.Models
+@using RegistrodeTecnicos.Service
+@inject TecnicoService tecnicoService
+@inject TipoTecnicoService tipoTecnicoService
+@inject NavigationManager navigationManager
+@rendermode InteractiveServer
+
+<PageTitle>Registro de TiposTecnicos</PageTitle>
+
+<EditForm Model="tecnico" OnValidSubmit="Guardar" formname="crearTipoTecnicoForm">
+    <DataAnnotationsValidator />
+
+    <div class="card">
+        <div class="card-header bg-primary text-white text-center py-2 rounded">
+            <h3><i class="fas fa-clipboard-list"></i> Registro de tipoTécnicos</h3>
+        </div>
+        <div class="card-body">
+           @*TipoId*@
+            <div class="form-group">
+                <label for="TipoId">TipoId</label>
+                <InputNumber id="TipoId" class="form-control" @bind-Value="tecnico.TipoId" />
+                <ValidationMessage For="@(() => tecnico.TipoId)" />
+            </div>
+
+            @*Descripción*@
+            <div class="form-group">
+                <label for="Descripcion">Descripci&oacute;n</label>
+                <InputText id="Descripcion" class="form-control" @bind-Value="tecnico.Descripcion" @oninput="()=> mostrarMensajeError = false" />
+                @if (mostrarMensajeError)
+                {
+                    <div class="text-danger">El campo no está lleno.</div>
+                }
+                <ValidationMessage For="@(() => tecnico.Descripcion)" />
+            </div>
+           @*Volver*@
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary mx-2">Guardar</button>
+                <NavLink href="/TipoTecnicos/index" class="btn btn-primary mx-2">Volver</NavLink>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    private TipoTecnicos tecnico = new TipoTecnicos();
+    private bool mostrarMensajeError = false; 
+
+    private async Task Guardar()
+    {
+        // if (await Validar())
+        // {
+        //     mostrarMensajeError = true; // Mostrar el mensaje de error solo si hay algún error de validación
+        //     return;
+        // }
+
+        var guardo = await tipoTecnicoService.Guardar(tecnico);
+        if (guardo)
+        {
+            Nuevo();
+            // Redireccionar automáticamente a la página de consulta después de guardar
+            navigationManager.NavigateTo("/TipoTecnicos/index");
+        }
+    }
+
+    public void Nuevo()
+    {
+        tecnico = new TipoTecnicos();
+    }
+
+    //Borrar este metodo ya que esta en el service
+    public async Task<bool> Validar()
+    {
+        if (string.IsNullOrWhiteSpace(tecnico.Descripcion))
+            return true; // Retorna verdadero si la descripción está vacía
+
+        var listaTecnicos = await tipoTecnicoService.Listar(t => t.Descripcion.ToLower() == tecnico.Descripcion.ToLower() && t.TipoId != tecnico.TipoId);
+        var Existe = listaTecnicos.Any();
+        return Existe;
+    }
+}

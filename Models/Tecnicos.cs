@@ -1,17 +1,22 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace RegistroTecnicos.Models
+namespace RegistrodeTecnicos.Models
 {
-    public class Tecnico
+    public class Tecnicos
     {
+        [Key]
+
         public int TecnicoId { get; set; }
-        public string? Nombres { get; set; }
-        public decimal SueldoHora { get; set; }
+
+        [Required(ErrorMessage = "El campo no esta lleno")]
+        public string? Nombre { get; set; }
+
+        [Required(ErrorMessage = "El campo no esta lleno")]
+        public float? Sueldohora { get; set; }
+
+        [ForeignKey("TipoTecnico")]
         public int TipoId { get; set; }
-        public TipoTecnico? Tipo { get; set; }
-
-
     }
 }
+

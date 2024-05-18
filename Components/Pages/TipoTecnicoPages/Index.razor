@@ -1,0 +1,78 @@
+﻿@page "/TipoTecnicos/index"
+@using RegistroTecnicos.Service
+@using RegistrodeTecnicos.Models
+@using RegistrodeTecnicos.Service
+@using RegistroTecnicos.Migrations
+@inject TecnicoService tecnicoService
+@inject TipoTecnicoService tipoTecnicoService
+@inject NavigationManager navigationManager
+@rendermode InteractiveServer
+
+<PageTitle>Consulta Tipos Técnicos</PageTitle>
+
+<div class="container">
+    <div class="card shadow-header">
+        <div class="card-header bg-primary text-white text-center py-2 rounded">
+            <h3 style="font-weight: bold;" class="mb-0 font-weight-bold">Consulta Tipos de técnicos</h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-9"></div>
+                <div class="col-md-3 text-end">
+                    <a href="/TipoTecnico/Create" class="btn btn-success" type="button">
+                        <i class="bi bi-pencil-square"></i> Crear
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered text-center">
+                <thead class="bg-primary text-white">
+                    <tr>
+                        <th>TipoId</th>
+                        <th>Descripción</th>
+                        <th>Detalle</th>
+                        <th>Editar</th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var t in ListaTipoTecnicos)
+                    {
+                        <tr>
+                            <td>@t.TipoId</td>
+                            <td>@t.Descripcion</td>
+                            <td>
+                                <a href="/TipoTecnico/Details/@t.TipoId" style="border: none; background-color: transparent;" class="btn-detalle">
+                                    <span class="bi bi-info-circle-fill" style="font-size: 2rem;"></span>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="/TipoTecnico/Edit/@t.TipoId" style="border: none; background-color: transparent;" class="btn-editar">
+                                    <span class="bi bi-pencil-square" style="font-size: 2rem;"></span>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="/TipoTecnico/Delete/@t.TipoId" class="btn btn-danger ml-1">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer text-start">
+            <p>Total de Tipos Técnicos: @ListaTipoTecnicos.Count</p>
+        </div>
+    </div>
+</div>
+
+@code {
+    public List<TipoTecnicos> ListaTipoTecnicos = new List<TipoTecnicos>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        ListaTipoTecnicos = await tipoTecnicoService.Listar(t => t.TipoId > 0);
+    }
+}

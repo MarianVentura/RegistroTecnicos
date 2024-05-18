@@ -1,51 +1,46 @@
-﻿@page "/Tecnico/Edit"
-@page "/Tecnico/Edit/{TecnicoId:int}"
+﻿@page "/TipoTecnico/Edit/{TipoId:int}"
 @using RegistroTecnicos.Service
 @using RegistrodeTecnicos.Models
 @using RegistrodeTecnicos.Service
+@using RegistroTecnicos.Migrations
 @inject TecnicoService tecnicoService
 @inject TipoTecnicoService tipoTecnicoService
 @inject NavigationManager navigationManager
 @rendermode InteractiveServer
 
-<EditForm Model="tecnicos" OnValidSubmit="Guardar">
+<EditForm Model="tipotecnicos" OnValidSubmit="Guardar">
     <DataAnnotationsValidator />
     <div class="card">
         <div class="card-header bg-primary text-white text-center py-2 rounded">
-            <h3> <i class="fas fa-clipboard-list"></i> Modificar T&eacute;cnico</h3>
+            <h3> <i class="fas fa-clipboard-list"></i> Modificar Tipo de Técnico</h3>
         </div>
 
         <div class="card-body">
-           @*TecnicoId*@
+           @*TipoId*@
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label for="TecnicoId" class="form-label">T&eacute;cnicoId:</label>
+                    <label for="TipoId" class="form-label">TipoId:</label>
                     <div class="input-group">
                         <div style="width: 40%; height: 1em;">
-                            <InputNumber @bind-Value="tecnicos.TecnicoId" class="form-control" style="font-size: 0.8em;" aria-describedby="BotonBuscar" />
+                            <InputNumber @bind-Value="tipotecnicos.TipoId" class="form-control" style="font-size: 0.8em;" />
                         </div>
-                        <ValidationMessage For="@(() => tecnicos.TecnicoId)" />
+                        <ValidationMessage For="@(() => tipotecnicos.TipoId)" />
                     </div>
                 </div>
             </div>
 
-           @*Nombres*@
+            @*Descripción*@
             <div class="mb-3">
-                <label for="Nombres" class="form-label">Nombre:</label>
-                <InputText @bind-Value="tecnicos.Nombre" class="form-control" />
-                <ValidationMessage For="@(() => tecnicos.Nombre)" />
+                <label for="Descripcion" class="form-label">Descripción:</label>
+                <InputText @bind-Value="tipotecnicos.Descripcion" class="form-control" />
+                <ValidationMessage For="@(() => tipotecnicos.Descripcion)" />
                 @if (Existe)
                 {
-                    <p class="text-danger">Ya existe una persona que tiene este nombre.</p>
+                    <p class="text-danger">Ya existe un tipo técnico con esta descripción.</p>
                 }
             </div>
 
-            @*SueldoHora*@
-            <div class="mb-3">
-                <label> SueldoHora </label>
-                <InputNumber @bind-Value="tecnicos.Sueldohora" class="form-control" />
-                <ValidationMessage For="@(() => tecnicos.Sueldohora)" />
-            </div>
+
         </div>
 
         <div class="card-footer bg-light d-flex justify-content-center mt-3">
@@ -60,13 +55,13 @@
 
 @code {
     [Parameter]
-    public int TecnicoId { get; set; }
-    public Tecnicos tecnicos { get; set; } = new Tecnicos();
+    public int TipoId { get; set; }
+    public TipoTecnicos tipotecnicos { get; set; } = new TipoTecnicos();
     private bool Existe = false;
 
     protected override async Task OnInitializedAsync()
     {
-        if (TecnicoId != 0)
+        if (TipoId != 0)
         {
             await Buscar();
         }
@@ -74,24 +69,25 @@
 
     public void Nuevo()
     {
-        tecnicos = new Tecnicos();
+        tipotecnicos = new TipoTecnicos();
         Existe = false;
     }
 
     public async Task Buscar()
     {
         Existe = false;
-        var tecnicoEncontrado = await tecnicoService.Buscar(TecnicoId);
+        var tipoEncontrado = await tipoTecnicoService.Buscar(TipoId);
 
-        if (tecnicoEncontrado != null)
+        if (tipoEncontrado != null)
         {
-            tecnicos = tecnicoEncontrado;
+            tipotecnicos = tipoEncontrado;
         }
         else
         {
             Nuevo();
         }
     }
+
     public async Task Guardar()
     {
         if (await Validar())
@@ -99,29 +95,28 @@
             return;
         }
 
-        var guardo = await tecnicoService.Guardar(tecnicos);
-        if (guardo)
+        var guardado = await tipoTecnicoService.Guardar(tipotecnicos);
+        if (guardado)
         {
             Nuevo();
         }
     }
 
-
     public async Task Eliminar()
     {
-        var eliminado = await tecnicoService.Eliminar(tecnicos.TecnicoId);
+        var eliminado = await tipoTecnicoService.Eliminar(tipotecnicos.TipoId);
         Nuevo();
     }
 
     private void Retroceder()
     {
-        navigationManager.NavigateTo("/Tecnico/index");
+        navigationManager.NavigateTo("/TipoTecnicos/index");
     }
 
     public async Task<bool> Validar()
     {
-        var listaTecnicos = await tecnicoService.Listar(t => t.Nombre.ToLower() == tecnicos.Nombre.ToLower() && t.TecnicoId != tecnicos.TecnicoId);
-        Existe = listaTecnicos.Any();
+        var listaTipos = await tipoTecnicoService.Listar(t => t.Descripcion.ToLower() == tipotecnicos.Descripcion.ToLower() && t.TipoId != tipotecnicos.TipoId);
+        Existe = listaTipos.Any();
         return Existe;
     }
 }

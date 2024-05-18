@@ -1,126 +1,132 @@
-﻿@page "/Tecnico/Index"
-
-@inject TecnicoService TecnicoService
+﻿@page "/Tecnico/index"
+@using RegistroTecnicos.Service
+@using RegistrodeTecnicos.Models
+@using RegistrodeTecnicos.Service
+@inject TecnicoService tecnicoService
+@inject TipoTecnicoService tipoTecnicoService
+@inject NavigationManager navigationManager
 @rendermode InteractiveServer
 
+<PageTitle>Consulta Técnicos</PageTitle>
+
 <EditForm Model="ListaTecnicos" class="border shadow-lg p-3 rounded">
-
-    <Toasts class="p-3" Messages="messages" Placement="ToastsPlacement.TopRight" />
-
     <div class="card-header bg-primary text-white text-center py-2 rounded">
-        <h3 style="font-weight: bold" class="mb-0 font-weight-bold>"Consulta Técnicos</h3>
+        <h3 style="font-weight: bold;" class="mb-0 font-weight-bold">Consulta Técnicos</h3>
     </div>
-    <div class="card-body">
-        <Button Color="ButtonColor.Primary"
-                @onclick="() => ShowMessage(ToastType.Primary)"> Primary Toast</Button>
 
-        <div class="top-row mb-3 aling-items-end">
-            <div class="col-mb-3">
-                <label for="Filtro" class="form-label">Filtrar por:</label>
-                <select @bind="filtro" class="form-select">
-                    <option value="id">ID</option>
-                    <option value="descripcion">Descripci&oacuten</option>
-                </select>
-            </div>
-            <div class="col-md-6">
-                <label for="ValorFiltro" class="form-label">Búsqueda:</label>
-                <div class="input-group">
-                    <input @bind="valorFiltro" class="form-control" placeholder="Buscar" />
-                    <button @onclick="Buscar" class="btn btn-outline-primary" type="button">
-                        <span class="bi bi-search"></span> Buscar
-                    </button>
-                </div>
-            </div>
-            <div class="col-md-3 text-end">
-                <a href="/tecnico/Create" class="btn btn-sucess" type="button"><span class="bi bi-floppy"></span> Crear </a>
+    <div class="row mb-3 align-items-end">
+        <div class="col-md-3">
+            <label for="Filtro" class="form-label">Filtrar por:</label>
+            <select @bind="filtro" class="form-select">
+                <option value="id">ID</option>
+                <option value="nombre">Nombre</option>
+                <option value="diascompromiso">Tipo técnico</option>
+            </select>
+        </div>
+        <div class="col-md-6">
+            <label for="ValorFiltro" class="form-label">Búsqueda:</label>
+            <div class="input-group">
+                <input @bind="valorFiltro" class="form-control" placeholder="Buscar" />
+                <button @onclick="Buscar" class="btn btn-outline-primary" type="button">
+                    <span class="bi bi-search"></span> Buscar
+                </button>
             </div>
         </div>
     </div>
-    <table class="table table-bordered text-center">
-        <thread class="bg-primary text-white">
-            <tr> 
-                <th>TecnicoId</th>
-                <th>Nombres</th>
-                <th>Sueldo por hora</th>
-                <th>Tipo de técnico</th>
-                <th>Editar</th>
-                <th>Eliminar</th>
-            </tr>
-        </thread>
-        <tbody>
-            @foreach (var tecnico in ListaTecnicos)
-            {
-                <tr>
-                    <td>@tecnico.TecnicoId</td>
-                    <td>@tecnico.Nombres</td>
-                    <td>@tecnico.SueldoHora</td>
-                    <td>@tecnico.Tipo.Descripcion</td>
-                    <td>
-                        <a class="btn btn-outline-primary" href="Tecnico/Details/@tecnico.TecnicoId">
-                            <span class="bi bi-marker-tip"></span>    
-                        </a>
-                    </td>
 
-                    <td>
-                        <a class="btn btn-outline-warning" href="/tecnico/Delete/@tecnico.TecnicoId">
-                            <span class="bi bi-dash-circle-fill"></span>    
-                        </a>
-                    </td>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-9"></div>
+            <div class="col-md-3 text-end">
+                <a href="/Tecnico/create" class="btn btn-success" type="button">
+                    <i class="bi bi-pencil-square"></i>
+                    Crear
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered text-center">
+            <thead class="bg-primary text-white">
+                <tr>
+                    <th>TécnicoId</th>
+                    <th>Nombre</th>
+                    <th>Tipo Técnico</th>
+                    <th>SueldoHora</th>
+                    <th>Detalle</th>
+                    <th>Editar</th>
+                    <th>Eliminar</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var t in ListaTecnicos)
+                {
+                    <tr>
+                        <td>@t.TecnicoId</td>
+                        <td>@t.Nombre</td>
+                        <td>@t.TipoId</td>
+                        <td>@t.Sueldohora</td>
+                        <td>
+                            <a href="/Tecnico/Details/@t.TecnicoId" style="border: none; background-color: transparent;" class="btn-detalle">
+                                <span class="bi bi-info-circle-fill" style="font-size: 2rem;"></span>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="/Tecnico/Edit/@t.TecnicoId" style="border: none; background-color: transparent;" class="btn-editar">
+                                <span class="bi bi-pencil-square" style="font-size: 2rem;"></span>
+                            </a>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-danger ml-1" @onclick="() => IrEliminar(t.TecnicoId)">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="card-footer text-start">
+        <p>Total de Técnicos: @ListaTecnicos.Count</p>
+    </div>
 </EditForm>
 
 @code {
-    public Tecnico tecnico = new Tecnico();
-
-    public List<Tecnico> ListaTecnicos = new List<Tecnico>();
-
-    List<ToastMessage> messages = new List<ToastMessage>();
-
-    private string filtro = "Id";
-    private string valorFiltro = "";
-
-    public Index()
-    {
-    }
-
-    private void ShowMessage(ToastType toastType) => messages.Add(CreateToastMessage(toastType));
-
-    private ToastMessage CreateToastMessage(ToastType toastType) => new ToastMessage
-        {
-            Type = toastType,
-            Title = "Registro de Técnicos",
-            HelpText = $"{DateTime.Now}",
-            Message = $"Hello, world! This is a toast message. DateTime: {DateTime.Now}",
-        };
+    public List<Tecnicos> ListaTecnicos { get; set; } = new List<Tecnicos>();
+    private string filtro = "id";
+    private string valorFiltro;
 
     protected override async Task OnInitializedAsync()
     {
-        ListaTecnicos = await TecnicoService.Listar(c => true);
-    }
-
-    public async Task Guardar()
-    {
-        var guardo = await TecnicoService.Guardar(tecnico);
+        ListaTecnicos = await tecnicoService.Listar(c => c.TecnicoId > 0);
     }
 
     private async Task Buscar()
     {
-        if (valorFiltro.Trim() != "")
+        if (!string.IsNullOrWhiteSpace(valorFiltro))
         {
             if (filtro == "id" && int.TryParse(valorFiltro, out int TecnicoId))
             {
-                ListaTecnicos = await TecnicoService.Listar(p => p.TecnicoId == TecnicoId);
+                ListaTecnicos = await tecnicoService.Listar(t => t.TecnicoId == TecnicoId);
             }
-         
+            else if (filtro == "nombre")
+            {
+                ListaTecnicos = await tecnicoService.Listar(t => t.Nombre.Contains(valorFiltro, StringComparison.OrdinalIgnoreCase));
+            }
+            else if (filtro == "diascompromiso" && int.TryParse(valorFiltro, out int TipoId))
+            {
+                ListaTecnicos = await tecnicoService.Listar(t => t.TipoId == TipoId);
+            }
         }
         else
         {
-            ListaTecnicos = await TecnicoService.Listar(t => true);
+            ListaTecnicos = await tecnicoService.Listar(p => true);
         }
+    }
 
+    private void IrEliminar(int tecnicoId)
+    {
+        navigationManager.NavigateTo($"/Tecnico/Delete/{tecnicoId}");
     }
 }
-
