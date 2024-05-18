@@ -2,6 +2,7 @@
 @page "/Tecnico/Edit/{TecnicoId:int}"
 @inject TecnicoService TecnicoService
 @inject NavigationManager NavigationManager
+
 @rendermode InteractiveServer
 
 <EditForm Model="@tecnico" OnValidSubmit="Guardar">
@@ -52,7 +53,7 @@
 @code {
     [Parameter]
     public int? TecnicoId { get; set; }
-    public Tecnicos tecnico { get; set; } = new Tecnicos();
+    public Tecnicos tecnico { get; set; } = new Tecnico();
     private bool Existe = false;
 
     protected override async Task OnInitializedAsync()
@@ -68,7 +69,7 @@
 
     public void Nuevo()
     {
-        tecnico = new Tecnicos();
+        tecnico = new Tecnico();
         Existe = false;
     }
 

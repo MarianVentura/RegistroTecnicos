@@ -81,7 +81,7 @@
 
     public async Task<bool> Validar()
     {
-        Existe = await TecnicoService.Existe(Tecnico.Descripcion);
+        Existe = await TecnicoService.Existe(tecnico.Nombres);
         return !Existe;
     }
 }
