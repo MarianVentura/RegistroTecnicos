@@ -4,13 +4,13 @@ using RegistroTecnicos.DAL;
 using System.Linq;
 using RegistroTecnicos.Models;
 
-namespace RegistroTecnicos.Service
+namespace RegistroTecnicos.Services
 {
-    public class TecnicoService
+    public class TecnicoServices
     {
         private readonly Contexto Contexto;
 
-        public TecnicoService(Contexto contexto)
+        public TecnicoServices(Contexto contexto)
         {
             Contexto = contexto;
         }
@@ -39,7 +39,7 @@ namespace RegistroTecnicos.Service
             return modificado;
         }
 
-        // Método guardar
+        // Método Guardar
         public async Task<bool> Guardar(Tecnicos tecnico)
         {
             if (!await Existe(tecnico.TecnicoId))
@@ -50,7 +50,7 @@ namespace RegistroTecnicos.Service
             }
         }
 
-        // Método eliminar
+        // Método Eliminar
 
         public async Task<bool> Eliminar(int id)
         {
@@ -67,7 +67,7 @@ namespace RegistroTecnicos.Service
                 .FirstOrDefaultAsync(t => t.TecnicoId == id);
         }
 
-        //Método listar
+        //Método Listar
 
         public async Task<List<Tecnicos>> Listar(Expression<Func<Tecnicos, bool>> criterio)
         {

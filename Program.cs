@@ -22,8 +22,10 @@ namespace RegistroTecnicos
             builder.Services.AddDbContext<Contexto>(Options => Options.UseSqlite(ConStr));
 
             builder.Services.AddScoped<TecnicoServices>();
+
             
-                var app = builder.Build();
+
+            var app = builder.Build();
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
