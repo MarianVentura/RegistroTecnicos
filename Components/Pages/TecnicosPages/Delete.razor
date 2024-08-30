@@ -1,4 +1,4 @@
-﻿﻿@page "/Tecnico/Delete"
+﻿@page "/Tecnico/Delete"
 @page "/Tecnico/Delete/TecnicoId={TecnicoId:int}"
 @using RegistroTecnicos.Services
 @inject TecnicoServices tecnicoServices
@@ -69,7 +69,7 @@
         }
     }
 
-    public async Task EliminarPrioridad()
+    public async Task EliminarTecnico()
     {
         if (TecnicoId == 0 || tecnicos == null)
         {
