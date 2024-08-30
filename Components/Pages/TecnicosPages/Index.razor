@@ -3,21 +3,22 @@
 @inject NavigationManager navigationManager
 @rendermode InteractiveServer
 
-<PageTitle>Consulta Técnicos</PageTitle>
+<PageTitle>Consulta T&eacute;cnicos</PageTitle>
 
 <EditForm Model="ListaTecnicos" class"border shadow-lg p-3 rounded">
     <div class="card-header bg-primary text-white text-center py-2 rounded">
-        <h3 style="font-weight: bold;" class="mb-0 font-weight-bold">Consulta Técnicos</h3>
+        <h3 style="font-weight: bold;" class="mb-0 font-weight-bold">Consulta T&eacute;cnicos</h3>
     </div>
     
    <div class="card-body">
        <div class="row">
-           <div class="col-md-9"></div>
+           <div class="col-md-9">
            <div class="col-md-3 text-end">
                <a href="Tecnico/Create" class="btn btn-success" type="button">
                    <i class="bi bi-pencil-square"></i>
                    Crear
                   </a>
+           </div>
            </div>
        </div>
    </div>
@@ -26,7 +27,7 @@
        <table class="table table-bordered text-center">
            <thead class="bg-primary text-white">
                <tr>
-                   <th>TécnicoId</th>
+                   <th>TecnicoId</th>
                    <th>Nombre</th>
                    <th>SueldoHora</th>
                    <th>Detalle</th>
@@ -52,11 +53,7 @@
                                <span class="bi bi-pencil-square" style="font-size: 2rem"></span>
                                </a>
                         </td>
-                        <td>
-                            <button type="button" class="btn btn-danger ml-1" @onclick="() => IrEliminar(t.TecnicoId)">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </td>
+                        
                     </tr>
                 }
             </tbody>
@@ -69,16 +66,13 @@
 </EditForm>
 
 @code {
-    public List<Tecnicos> ListaTecnicos { get; set; } = new List<Tecnicos>();
+    public Tecnicos tecnico = new Tecnicos();
+    public List<Tecnicos> ListaTecnicos  = new List<Tecnicos>();
     private string filtro = "id";
     private string valorfiltro = "";
 
     protected override async Task OnInitializedAsync()
     {
         ListaTecnicos = await tecnicoServices.Listar(t => true);
-    }
-    private async Task IrEliminar(int tecnicoId)
-    {
-        navigationManager.NavigateTo($"/Tecnicos/Delete/tecnicoId={tecnicoId}");
     }
 }
