@@ -41,17 +41,16 @@
 
 </EditForm>
 
-@code {
+@code{
     [Parameter]
-    public int TecnicoId { get; set; }
+    public int TenicoId { get; set; }
 
-    public Tecnicos tecnico { get; set; } = new Tecnicos();
-    public List<TipoTecnicos> tipos = new List<TipoTecnicos>();
+    public Tecnicos tecnicos { get; set; } = new Tecnicos();
     private bool Existe = false;
 
     public async Task Nuevo()
     {
-        tecnico = new Tecnicos();
+        tecnicos = new Tecnicos();
         Existe = false;
     }
 
@@ -62,7 +61,7 @@
 
         if (tecnicoEncontrado != null)
         {
-            tenico = tecnicoEncontrado
+            tecnicoEncontrado = tecnicoEncontrado;
         }
         else
         {
@@ -72,7 +71,7 @@
 
     public async Task<bool> Validar()
     {
-        Existe = await tecnicoServices.Existe(tecnico.TecnicoId);
+        Existe = await tecnicoServices.Existe(tecnicos.TecnicoId);
         return !Existe;
     }
 
@@ -82,7 +81,18 @@
         {
             return;
         }
-
-        var guardar = 
+        var guardo = await tecnicoServices.Guardar(tecnico);
+        if (guardo)
+        {
+            Nuevo();
+        }
+    }
+    public async Task Eliminar()
+    {
+        var eliminado = await tecnicoServices.Eliminar(tecnicos.TecnicoId);
+        Nuevo();
     }
 }
+
+    
+
