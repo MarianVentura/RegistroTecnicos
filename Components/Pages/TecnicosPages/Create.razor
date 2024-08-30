@@ -1,13 +1,15 @@
-﻿@page "/Tecnico/Create"
+﻿﻿@page "/Tecnico/create"
+@using RegistroTecnicos.Services
 @inject TecnicoServices tecnicoServices
 @inject NavigationManager navigationManager
 @rendermode InteractiveServer
 
+<PageTitle>Registro de T&eacute;cnicos</PageTitle>
 <EditForm Model="tecnico" OnValidSubmit="Guardar">
-    <DataAnnotationsValidator/>
-    <div class="card shadow-lg border-0 rounded" style="background-color: transparent;">
-        <div class="card-header bg-primary text-white" style="text-align: center">
-            <h3> <i class="fas fa-clipboard-list"></i>Registro de Técnicos</h3>
+    <DataAnnotationsValidator />
+    <div class="card">
+        <div class="card-header bg-primary text-white text-center py-2 rounded">
+            <h3> <i class="fas fa-clipboard-list"></i> Registro de T&eacute;cnicos</h3>
         </div>
 
         <div class="card-body">
@@ -19,38 +21,52 @@
                         <div style="width: 40%; height: 1em;">
                             <InputNumber @bind-Value="tecnico.TecnicoId" class="form-control" style="font-size: 0.8em;" aria-describedby="BotonBuscar" />
                         </div>
+                        <ValidationMessage For="@(() => tecnico.TecnicoId)" />
                     </div>
                 </div>
             </div>
 
-            @*Nombre*@
+            @*Nombres*@
             <div class="mb-3">
                 <label for="Nombres" class="form-label">Nombre:</label>
                 <InputText @bind-Value="tecnico.Nombre" class="form-control" />
-                ValidationMessage For="@(() => tecnicoServices.Nombre)" />
+                <ValidationMessage For="@(() => tecnico.Nombre)" />
+                @if (Existe)
+                {
+                    <p class="text-danger">Ya existe una persona que tiene este nombre.</p>
+                }
             </div>
 
             @*SueldoHora*@
             <div class="mb-3">
                 <label> SueldoHora </label>
-                <InputNumber @bind-Value="tecnico.Sueldohora" class="form-control" />
-                <ValidationMessage For="@(() => tecnico.Sueldohora)" />
+                <InputNumber @bind-Value="tecnico.SueldoHora" class="form-control" />
+                <ValidationMessage For="@(() => tecnico.SueldoHora)" />
+            </div>
+        </div>
+
+        <div class="card-footer bg-light d-flex justify-content-center mt-3">
+            <div class="btn-group">
+
+                <button type="submit" class="btn btn-outline-success ml-2"><span class="bi bi-check-circle-fill"></span> Guardar </button>
+                <button type="button" class="btn btn-outline-danger" @onclick="Eliminar"><span class="bi bi-trash-fill"></span> Eliminar </button>
+                <button type="button" class="btn btn-outline-danger" @onclick="Retroceder"><span class="bi bi-arrow-bar-left"></span> Retroceder </button>
             </div>
         </div>
     </div>
-
 </EditForm>
 
-@code{
+@code {
     [Parameter]
-    public int TenicoId { get; set; }
+    public int TecnicoId { get; set; }
 
-    public Tecnicos tecnicos { get; set; } = new Tecnicos();
+    public Tecnicos tecnico { get; set; } = new Tecnicos();
     private bool Existe = false;
+
 
     public async Task Nuevo()
     {
-        tecnicos = new Tecnicos();
+        tecnico = new Tecnicos();
         Existe = false;
     }
 
@@ -61,7 +77,7 @@
 
         if (tecnicoEncontrado != null)
         {
-            tecnicoEncontrado = tecnicoEncontrado;
+            tecnico = tecnicoEncontrado;
         }
         else
         {
@@ -69,30 +85,36 @@
         }
     }
 
-    public async Task<bool> Validar()
-    {
-        Existe = await tecnicoServices.Existe(tecnicos.TecnicoId);
-        return !Existe;
-    }
-
     public async Task Guardar()
     {
-        if (!await Validar())
+        if (await Validar())
         {
             return;
         }
+
         var guardo = await tecnicoServices.Guardar(tecnico);
         if (guardo)
         {
             Nuevo();
+            navigationManager.NavigateTo("/Tecnico/index");
         }
     }
+
     public async Task Eliminar()
     {
-        var eliminado = await tecnicoServices.Eliminar(tecnicos.TecnicoId);
+        var eliminado = await tecnicoServices.Eliminar(tecnico.TecnicoId);
         Nuevo();
     }
+
+    private void Retroceder()
+    {
+        navigationManager.NavigateTo("/Tecnico/index");
+    }
+
+    public async Task<bool> Validar()
+    {
+        var listaTecnicos = await tecnicoServices.Listar(t => t.Nombre.ToLower() == tecnico.Nombre.ToLower() && t.TecnicoId != tecnico.TecnicoId);
+        Existe = listaTecnicos.Any();
+        return Existe;
+    }
 }
-
-    
-

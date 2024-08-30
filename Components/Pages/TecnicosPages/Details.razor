@@ -1,17 +1,17 @@
-﻿@page "/Tecnico/Details"
-@page "Tecnico/Details/{TecnicoId:int}"
+﻿﻿@page "/Tecnico/Details/{TecnicoId:int}"
+@using RegistroTecnicos.Services
 @inject TecnicoServices tecnicoServices
 @inject NavigationManager navigationManager
 @rendermode InteractiveServer
 
-<PageTitle>Detalles del Técnico</PageTitle>
+<PageTitle>Detalles del t&eacute;cnico</PageTitle>
 
-@if (Tecnicos != null)
+@if (tecnico != null)
 {
     <div class="container">
         <div class="card shadow-header">
-            <div class="card-header bg-primary text-white text-center py-2 rounded">
-                <h3 class="text-center"><strong>Detalles del técnico</strong></h3>
+            <div class="card-header  bg-primary text-white text-center py-2 rounded">
+                <h3 class="text-center"><strong>Detalles del t&eacute;cnico</strong></h3>
             </div>
             <div class="container">
                 <div class="row">
@@ -19,9 +19,9 @@
 
                         <div class="card-body">
                             <ul class="list-unstyled">
-                                <li><strong>TecnicoId:</strong> @Tecnicos.TecnicoId</li>
-                                <li><strong>Nombre:</strong> @Tecnicos.Nombre</li>
-                                <li><strong>SueldoHora:</strong> @Tecnicos.SueldoHora</li>
+                                <li><strong>T&eacute;cnicoId:</strong> @tecnico.TecnicoId</li>
+                                <li><strong>Nombre:</strong> @tecnico.Nombre</li>
+                                <li><strong>SueldoHora:</strong> @tecnico.SueldoHora</li>
                             </ul>
                         </div>
 
@@ -29,28 +29,28 @@
                 </div>
             </div>
             <div class="card-footer">
-                <button type="button" class="btn btn-outline-primary" onclick="Volver"><i class="bi bi-box-arrow-left"></i> Volver</button>
+                <button type="button" class="btn btn-outline-primary" @onclick="Volver"><i class="bi bi-box-arrow-left"></i> Volver</button>
             </div>
         </div>
     </div>
 }
 else
 {
-    <p>Técnico no encontrado.</p>
+    <p>Tecnico no encontrado.</p>
 }
 
 @code {
     [Parameter]
     public int TecnicoId { get; set; }
-    public Tecnicos? Tecnico { get; set; } = new Tecnicos();
+    public Tecnicos? tecnico { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        Tecnico = await tecnicoServices.Buscar(TecnicoId);
+        tecnico = await tecnicoServices.Buscar(TecnicoId);
     }
 
-    public async Task Volver()
+    public void Volver()
     {
-        navigationManager.NavigateTo("Tecnico/Index");
+        navigationManager.NavigateTo("/Tecnico/index");
     }
 }
