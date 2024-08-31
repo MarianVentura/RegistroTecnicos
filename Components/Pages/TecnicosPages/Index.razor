@@ -48,7 +48,7 @@
                     <th>TécnicoId</th>
                     <th>Nombre</th>
                     <th>SueldoHora</th>
-                    <th>Detalle</th>
+                    <th>Ver</th>
                     <th>Editar</th>
                     <th>Eliminar</th>
                 </tr>
@@ -61,19 +61,19 @@
                         <td>@t.Nombre</td>
                         <td>@t.SueldoHora</td>
                         <td>
-                            <a href="/Tecnico/Details/@t.TecnicoId" style="border: none; background-color: transparent;" class="btn-detalle">
-                                <span class="bi bi-info-circle-fill" style="font-size: 2rem;"></span>
+                            <a class="btn btn-outline-primary" href="/Tecnico/Details/@t.TecnicoId">
+                                <span class="bi bi-eye-fill"></span>
                             </a>
                         </td>
                         <td>
-                            <a href="/Tecnico/Edit/@t.TecnicoId" style="border: none; background-color: transparent;" class="btn-editar">
-                                <span class="bi bi-pencil-square" style="font-size: 2rem;"></span>
+                            <a class="btn btn-outline-secondary" href="/Tecnico/Edit/@t.TecnicoId">
+                                <span class="bi bi-pencil-square"></span>
                             </a>
                         </td>
                         <td>
-                            <button type="button" class="btn btn-danger ml-1" @onclick="() => IrEliminar(t.TecnicoId)">
-                                <i class="bi bi-trash"></i>
-                            </button>
+                            <a class="btn btn-outline-danger" href="/Tecnico/Delete/@t.TecnicoId">
+                                <span class="bi bi-trash"></span>
+                            </a>
                         </td>
                     </tr>
                 }
@@ -114,8 +114,17 @@
         }
     }
 
-    private void IrEliminar(int tecnicoId)
+    private void IrADetalles(int TecnicoId)
     {
-        navigationManager.NavigateTo($"/Tecnico/Delete/{tecnicoId}");
+        navigationManager.NavigateTo($"/Tecnico/Details/{TecnicoId:int}");
+    }
+
+    private void IrAEditar(int TecnicoId)
+    {
+        navigationManager.NavigateTo($"/Tecnico/Edit/{TecnicoId:int}");
+    }
+    private void IrEliminar(int TecnicoId)
+    {
+        navigationManager.NavigateTo($"/Tecnico/Delete/{TecnicoId:int}");
     }
 }
