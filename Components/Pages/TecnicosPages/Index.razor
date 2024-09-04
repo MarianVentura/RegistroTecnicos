@@ -59,7 +59,7 @@
                 {
                     <tr>
                         <td>@t.TecnicoId</td>
-                        <td>@t.Nombre</td>
+                        <td>@t.Nombres</td>
                         <td>@t.SueldoHora</td>
                         <td>
                             <a class="btn btn-outline-primary" href="/Tecnico/Details/@t.TecnicoId">
@@ -106,7 +106,7 @@
             }
             else if (filtro == "nombre")
             {
-                ListaTecnicos = await tecnicoServices.Listar(t => t.Nombre.Contains(valorFiltro, StringComparison.OrdinalIgnoreCase));
+                ListaTecnicos = await tecnicoServices.Listar(t => t.Nombres.Contains(valorFiltro, StringComparison.OrdinalIgnoreCase));
             }
         }
         else

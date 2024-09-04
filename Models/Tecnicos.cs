@@ -8,7 +8,7 @@ public class Tecnicos
     public int TecnicoId { get; set; }
 
     [Required(ErrorMessage = "El campo no esta lleno")]
-    public string? Nombre { get; set; }
+    public string? Nombres { get; set; }
 
     public int SueldoHora { get; set; }
 }

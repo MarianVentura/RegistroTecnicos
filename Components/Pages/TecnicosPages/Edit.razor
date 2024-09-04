@@ -27,9 +27,9 @@
 
            @*Nombres*@
             <div class="mb-3">
-                <label for="Nombres" class="form-label">Nombre:</label>
-                <InputText @bind-Value="tecnicos.Nombre" class="form-control" />
-                <ValidationMessage For="@(() => tecnicos.Nombre)" />
+                <label for="Nombres" class="form-label">Nombres:</label>
+                <InputText @bind-Value="tecnicos.Nombres" class="form-control" />
+                <ValidationMessage For="@(() => tecnicos.Nombres)" />
                 @if (Existe)
                 {
                     <p class="text-danger">Ya existe una persona que tiene este nombre.</p>
@@ -116,7 +116,7 @@
 
     public async Task<bool> Validar()
     {
-        var listaTecnicos = await tecnicoServices.Listar(t => t.Nombre.ToLower() == tecnicos.Nombre.ToLower() && t.TecnicoId != tecnicos.TecnicoId);
+        var listaTecnicos = await tecnicoServices.Listar(t => t.Nombres.ToLower() == tecnicos.Nombres.ToLower() && t.TecnicoId != tecnicos.TecnicoId);
         Existe = listaTecnicos.Any();
         return Existe;
     }
