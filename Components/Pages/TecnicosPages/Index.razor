@@ -6,7 +6,7 @@
 <PageTitle>Consulta Técnicos</PageTitle>
 
 <EditForm Model="ListaTecnicos" class="border shadow-lg p-3 rounded">
-    <div class="card-header text-white text-center py-2 square" style="background-color: black;">
+    <div class="card-header bg-primary text-white text-center py-2 square";>
         <h3 style="font-weight: bold;" class="mb-0 font-weight-bold">Consulta de Técnicos</h3>
     </div>
 
@@ -34,7 +34,7 @@
         <div class="row">
             <div class="col-md-9"></div>
             <div class="col-md-3 text-end">
-                <a href="/Tecnico/create" class="btn btn-info" type="button">
+                <a href="/Tecnico/create" class="btn btn-success" type="button">
                     <i class="bi bi-pencil-square"></i>
                     Crear
                 </a>
@@ -44,7 +44,7 @@
 
     <div class="table-responsive">
         <table class="table table-bordered text-center">
-            <thead style="background-color: black; color: white;">
+            <thead class="bg-primary text-white">
                 <tr>
                     <th>TécnicoId</th>
                     <th>Nombre</th>
@@ -62,17 +62,17 @@
                         <td>@t.Nombre</td>
                         <td>@t.SueldoHora</td>
                         <td>
-                            <a class="btn btn-warning" href="/Tecnico/Details/@t.TecnicoId">
+                            <a class="btn btn-outline-primary" href="/Tecnico/Details/@t.TecnicoId">
                                 <span class="bi bi-eye-fill"></span>
                             </a>
                         </td>
                         <td>
-                            <a class="btn btn-success" href="/Tecnico/Edit/@t.TecnicoId">
+                            <a class="btn btn-outline-success" href="/Tecnico/Edit/@t.TecnicoId">
                                 <span class="bi bi-pencil-square"></span>
                             </a>
                         </td>
                         <td>
-                            <a class="btn btn-danger" href="/Tecnico/Delete/@t.TecnicoId">
+                            <a class="btn btn-outline-danger" href="/Tecnico/Delete/@t.TecnicoId">
                                 <span class="bi bi-trash"></span>
                             </a>
                         </td>
