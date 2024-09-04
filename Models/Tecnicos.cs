@@ -10,5 +10,11 @@ public class Tecnicos
     [Required(ErrorMessage = "El campo no esta lleno")]
     public string? Nombres { get; set; }
 
-    public int SueldoHora { get; set; }
+    public decimal SueldoHora { get; set; }
+}
+
+public class TipoTecnico
+{
+    public int TipoTecnicoId { get; set; }
+    public string? Descripcion { get; set; }
 }
