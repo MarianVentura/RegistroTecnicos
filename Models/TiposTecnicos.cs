@@ -1,14 +1,15 @@
-﻿using Microsoft.AspNetCore.Antiforgery;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace RegistroTecnicos.Models;
-
-public class TiposTecnicos
+namespace RegistroTecnicos.Models
 {
-    public int TipoTecnicoId { get; set; }
+    public class TiposTecnicos
+    {
+        [Key]
 
-    public string? Descripcion { get; set; }
+        public int TipoTecnicoId { get; set; }
+        [Required(ErrorMessage = "El campo no esta lleno")]
+        public string? Descripcion { get; set; }
 
-    public bool Activo { get; set; }
 
-   
+    }
 }
