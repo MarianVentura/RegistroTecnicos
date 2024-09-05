@@ -22,6 +22,7 @@ public class Program
         builder.Services.AddDbContext<Contexto>(Options => Options.UseSqlite(ConStr));
 
         builder.Services.AddScoped<TecnicoServices>();
+        builder.Services.AddScoped<TiposTecnicosServices>();
 
         builder.Services.AddBlazorBootstrap();
 
