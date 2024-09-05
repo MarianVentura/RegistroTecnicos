@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RegistroTecnicos.Models;
 
@@ -11,10 +12,11 @@ public class Tecnicos
     public string? Nombres { get; set; }
 
     public decimal SueldoHora { get; set; }
+
+    [ForeignKey("TiposTecnicos")]
+    public int TipoTecnicoId { get; set; }
+    public TiposTecnicos? TiposTecnicos {  get; set; }
+
+     
 }
 
-public class TipoTecnico
-{
-    public int TipoTecnicoId { get; set; }
-    public string? Descripcion { get; set; }
-}
