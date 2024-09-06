@@ -14,7 +14,7 @@ public class Tecnicos
     public decimal SueldoHora { get; set; }
 
     [ForeignKey("TiposTecnicos")]
-    public int TipoTecnicoId { get; set; }
+    public int TiposTecnicosId { get; set; }
     public TiposTecnicos? TiposTecnicos {  get; set; }
 
      
