@@ -6,13 +6,18 @@ using System.Linq.Expressions;
 
 namespace RegistroTecnicos;
 
-public class TiposTecnicosServices(Contexto contexto)
+public class TiposTecnicosServices
 {
-    private readonly Contexto _contexto = contexto;
+    private readonly Contexto _contexto;
 
-    public async Task<bool> ExisteTipoId(int id)
+    public TiposTecnicosServices(Contexto contexto)
     {
-        return await _contexto.TiposTecnicos.AnyAsync(t => t.TipoTecnicoId == id);
+        _contexto = contexto;
+    }
+
+    public async Task<bool> ExisteTipoId(int tiposTecnicosId)
+    {
+        return await _contexto.TiposTecnicos.AnyAsync(t => t.TiposTecnicosId == tiposTecnicosId);
 
     }
 
@@ -30,28 +35,29 @@ public class TiposTecnicosServices(Contexto contexto)
     private async Task<bool> Modificar(TiposTecnicos tiposTecnicos)
     {
         _contexto.TiposTecnicos.Update(tiposTecnicos);
-        return await _contexto.SaveChangesAsync() > 0;
+        var modificado = await _contexto.SaveChangesAsync() > 0;
+        return modificado;
     }
 
     public async Task<bool> Guardar(TiposTecnicos tiposTecnicos)
     {
-        if(!await ExisteTipoId(tiposTecnicos.TipoTecnicoId))
+        if(!await ExisteTipoId(tiposTecnicos.TiposTecnicosId))
             return await Insertar(tiposTecnicos);
-
-        return await Modificar(tiposTecnicos);
+        else
+            return await Modificar(tiposTecnicos);
     }
 
     public async Task<bool> Eliminar(int id)
     {
         return await _contexto.TiposTecnicos
-            .Where(t => t.TipoTecnicoId == id).ExecuteDeleteAsync() > 0;
+            .Where(t => t.TiposTecnicosId == id).ExecuteDeleteAsync() > 0;
     }
 
     public async Task<TiposTecnicos?> Buscar(int id)
     {
         return await _contexto.TiposTecnicos
             .AsNoTracking()
-            .FirstOrDefaultAsync(t => t.TipoTecnicoId == id);
+            .FirstOrDefaultAsync(t => t.TiposTecnicosId == id);
     }
 
     public async Task<List<TiposTecnicos>> Listar(Expression<Func<TiposTecnicos, bool>> criterio)
@@ -60,5 +66,10 @@ public class TiposTecnicosServices(Contexto contexto)
             .AsNoTracking()
             .Where(criterio)
             .ToListAsync();
+    }
+
+    public async Task<bool> ExisteTipoTecnico(int id, string? descripcion)
+    {
+        return await _contexto.TiposTecnicos.AnyAsync(e => e.TiposTecnicosId != id && e.Descripcion.ToLower().Equals(descripcion.ToLower()));
     }
 }
