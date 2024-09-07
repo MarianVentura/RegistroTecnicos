@@ -5,6 +5,7 @@
 @rendermode InteractiveServer
 
 <PageTitle>Registro de T&eacute;cnicos</PageTitle>
+
 <EditForm Model="tecnico" OnValidSubmit="Guardar">
     <DataAnnotationsValidator />
     <div class="card">
@@ -15,14 +16,10 @@
         <div class="card-body">
             @*TecnicoId*@
             <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label for="TecnicoId" class="form-label">T&eacute;cnicoId:</label>
-                    <div class="input-group">
-                        <div style="width: 40%; height: 1em;">
-                            <InputNumber @bind-Value="tecnico.TecnicoId" class="form-control" style="font-size: 0.8em;" aria-describedby="BotonBuscar" />
-                        </div>
-                        <ValidationMessage For="@(() => tecnico.TecnicoId)" />
-                    </div>
+                <div class="col-4 ms-3">
+                    <label class="form-label"><strong>TécnicoId</strong></label>
+                    <InputNumber class="form-control" @bind-Value="tecnico.TecnicoId" />
+                    <ValidationMessage For="@(() => tecnico.TecnicoId)" />
                 </div>
             </div>
 
@@ -40,32 +37,37 @@
 
             @*TipoTecnico*@
             <div class="mb-3">
-                <label for="TipoTecnico" class="form-label">Tipo de Técnico</label>
-                <InputSelect class="form-select" @bind-Value="tecnico.TipoTecnicoId">
-                    <option value="" disabled selected>Seleccione un Tipo de Técnico:</option>
-                    @foreach (var tiposTecnicos in ListaTiposTecnicos)
-                    {
-                        <option value="@tiposTecnicos.TipoTecnicoId"> @tiposTecnicos.Descripcion</option>
-                    }
-                </InputSelect>
-
+                <label for="TipoTecnicoId">Tipo de Técnico:</label>
+                <div class="row">
+                    <div class="col-4 ms-3">
+                        <InputSelect @bind-Value="tecnico.TipoTecnicoId" class="form-control">
+                            <option value="">Seleccione un tipo de técnico</option>
+                            @foreach (var tiposTecnicos in ListaTiposTecnicos)
+                            {
+                                <option value="@tiposTecnicos.TipoTecnicoId">@tiposTecnicos.Descripcion</option>
+                            }
+                        </InputSelect>
+                        <ValidationMessage For="@(() => tecnico.TipoTecnicoId)" />
+                    </div>
+                </div>
             </div>
 
-            @*SueldoHora*@
-            <div class="mb-3">
-                <label> SueldoHora </label>
-                <InputNumber @bind-Value="tecnico.SueldoHora" class="form-control" />
-                <ValidationMessage For="@(() => tecnico.SueldoHora)" />
-            </div>
         </div>
 
-        <div class="card-footer bg-light d-flex justify-content-center mt-3">
-            <div class="btn-group">
+        @*SueldoHora*@
+        <div class="mb-3">
+            <label for="SueldoHora" class="form-label"><strong>Sueldo por Hora</strong></label>
+            <InputNumber @bind-Value="tecnico.SueldoHora" class="form-control" />
+            <ValidationMessage For="@(() => tecnico.SueldoHora)" />
+        </div>
+    </div>
 
-                <button type="submit" class="btn btn-outline-success ml-2"><span class="bi bi-check-circle-fill"></span> Guardar </button>
-                <button type="button" class="btn btn-outline-danger" @onclick="Eliminar"><span class="bi bi-trash-fill"></span> Eliminar </button>
-                <button type="button" class="btn btn-outline-danger" @onclick="Volver"><span class="bi bi-arrow-left-square-fill"></span> Volver </button>
-            </div>
+    <div class="card-footer bg-light d-flex justify-content-center mt-3">
+        <div class="btn-group">
+
+            <button type="submit" class="btn btn-outline-success ml-2"><span class="bi bi-check-circle-fill"></span> Guardar </button>
+            <button type="button" class="btn btn-outline-danger" @onclick="Eliminar"><span class="bi bi-trash-fill"></span> Eliminar </button>
+            <button type="button" class="btn btn-outline-danger" @onclick="Volver"><span class="bi bi-arrow-left-square-fill"></span> Volver </button>
         </div>
     </div>
 </EditForm>
