@@ -103,11 +103,11 @@
         {
             if (filtro == "id" && int.TryParse(valorFiltro, out int TiposTecnicosId))
             {
-                ListaTiposTecnicos = await tiposTecnicosServices.Listar(tipos => tipos.TiposTecnicosId == TiposTecnicosId);
+                ListaTiposTecnicos = await tiposTecnicosServices.Listar(t => t.TiposTecnicosId == TiposTecnicosId);
             }
             else if (filtro == "descripcion")
             {
-                ListaTiposTecnicos = await tiposTecnicosServices.Listar(tipos => tipos.Descripcion.Contains(valorFiltro, StringComparison.OrdinalIgnoreCase));
+                ListaTiposTecnicos = await tiposTecnicosServices.Listar(t => t.Descripcion.Contains(valorFiltro, StringComparison.OrdinalIgnoreCase));
             }
         }
         else
