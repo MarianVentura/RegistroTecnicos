@@ -114,7 +114,7 @@
 
     public async Task<bool> Validar()
     {
-        var listaTiposTecnicos = await tiposTecnicosServices.Listar(t => t.Descripcion.ToLower() == tiposTecnicos.Descripcion.ToLower() && t.TiposTecnicosId != tiposTecnicos.TiposTecnicosId);
+        var listaTiposTecnicos = await tiposTecnicosServices.Listar(tipos => tipos.Descripcion.ToLower() == tiposTecnicos.Descripcion.ToLower() && tipos.TiposTecnicosId != tiposTecnicos.TiposTecnicosId);
         Existe = listaTiposTecnicos.Any();
         return Existe;
     }
