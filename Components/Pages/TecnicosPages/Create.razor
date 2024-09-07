@@ -31,21 +31,21 @@
                 <label for="Nombres" class="form-label">Nombres:</label>
                 <InputText @bind-Value="tecnico.Nombres" class="form-control" />
                 <ValidationMessage For="@(() => tecnico.Nombres)" />
-                @*  @if (Existe)
+                @if (Existe)
                 {
-                <p class="text-danger">Ya existe una persona que tiene este nombre.</p>
-                } *@
+                    <p class="text-danger">Ya existe una persona que tiene este nombre.</p>
+                }
 
             </div>
 
             @*TipoTecnico*@
             <div class="mb-3">
                 <label for="TipoTecnico" class="form-label">Tipo de Técnico</label>
-                <InputSelect class="form-select" @bind-Value="tecnico.TiposTecnicosId">
-                    <option =" 0 " selected disabled> Seleccione un tipo de técnico</option>
+                <InputSelect class="form-select" @bind-Value="tecnico.TipoTecnicoId">
+                    <option value="" disabled selected>Seleccione un Tipo de Técnico:</option>
                     @foreach (var tiposTecnicos in ListaTiposTecnicos)
                     {
-                        <option value="@tecnico.TiposTecnicosId"> @tiposTecnicos.Descripcion</option>
+                        <option value="@tiposTecnicos.TipoTecnicoId"> @tiposTecnicos.Descripcion</option>
                     }
                 </InputSelect>
 
@@ -101,7 +101,7 @@
         }
         else
         {
-            Nuevo();
+            await Nuevo();
         }
     }
 
@@ -115,7 +115,7 @@
         var guardo = await tecnicoServices.Guardar(tecnico);
         if (guardo)
         {
-            Nuevo();
+            await Nuevo();
             navigationManager.NavigateTo("/Tecnico/index");
         }
     }
@@ -123,7 +123,7 @@
     public async Task Eliminar()
     {
         var eliminado = await tecnicoServices.Eliminar(tecnico.TecnicoId);
-        Nuevo();
+        await Nuevo();
     }
 
     private void Volver()
