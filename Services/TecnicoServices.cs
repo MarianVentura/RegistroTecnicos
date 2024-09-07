@@ -72,6 +72,7 @@ public class TecnicoServices
     public async Task <List<Tecnicos>> Listar(Expression<Func<Tecnicos, bool>> criterio)
     {
         return await Contexto.Tecnicos
+            .Include(t => t.TipoTecnico)
             .Where(criterio)
             .ToListAsync();
     }
