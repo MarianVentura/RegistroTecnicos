@@ -1,5 +1,6 @@
 ﻿@page "/Tecnico/index"
 @inject TecnicoServices tecnicoServices
+@inject TiposTecnicosServices tiposTecnicosServices
 @inject NavigationManager navigationManager
 @rendermode InteractiveServer
 
@@ -17,6 +18,7 @@
                 <option value="" disabled selected>Filtrar por:</option>
                 <option value="id">ID</option>
                 <option value="nombre">Nombre</option>
+                <option value="tipo">Tipo de Técnico</option>
             </select>
         </div>
         <div class="col-md-6">
@@ -47,7 +49,8 @@
             <thead class="bg-primary text-white">
                 <tr>
                     <th>TécnicoId</th>
-                    <th>Nombre</th>
+                    <th>Nombres</th>
+                    <th>Tipo de Técnico</th>
                     <th>SueldoHora</th>
                     <th>Ver</th>
                     <th>Editar</th>
@@ -60,6 +63,7 @@
                     <tr>
                         <td>@t.TecnicoId</td>
                         <td>@t.Nombres</td>
+                        <td>@t.TipoTecnico.Descripcion</td>
                         <td>@t.SueldoHora</td>
                         <td>
                             <a class="btn btn-outline-primary" href="/Tecnico/Details/@t.TecnicoId">
@@ -90,9 +94,11 @@
     public List<Tecnicos> ListaTecnicos { get; set; } = new List<Tecnicos>();
     private string filtro = "id";
     private string valorFiltro;
+    private List<TiposTecnicos> ListaTiposTecnicos { get; set; } = new List<TiposTecnicos>();
 
     protected override async Task OnInitializedAsync()
     {
+        ListaTiposTecnicos = await tiposTecnicosServices.Listar(t => true);
         ListaTecnicos = await tecnicoServices.Listar(c => c.TecnicoId > 0);
     }
 
@@ -107,6 +113,18 @@
             else if (filtro == "nombre")
             {
                 ListaTecnicos = await tecnicoServices.Listar(t => t.Nombres.Contains(valorFiltro, StringComparison.OrdinalIgnoreCase));
+            }
+            else if (filtro == "tipo")
+            {
+                var tipo = ListaTiposTecnicos.FirstOrDefault(tt => tt.Descripcion.Contains(valorFiltro, StringComparison.OrdinalIgnoreCase));
+                if (tipo != null)
+                {
+                    ListaTecnicos = await tecnicoServices.Listar(t => t.TipoTecnicoId == tipo.TipoTecnicoId);
+                }
+                else
+                {
+                    ListaTecnicos = new List<Tecnicos>();
+                }
             }
         }
         else
