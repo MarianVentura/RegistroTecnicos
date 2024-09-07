@@ -77,7 +77,8 @@
         }
         else
         {
-            Nuevo();
+            await Nuevo();
+
         }
     }
 
@@ -91,7 +92,7 @@
         var guardo = await tiposTecnicosServices.Guardar(tiposTecnicos);
         if (guardo)
         {
-            Nuevo();
+            await Nuevo();
             navigationManager.NavigateTo("/Tecnicos/TiposTecnicos/Index");
         }
     }
@@ -99,7 +100,7 @@
     public async Task Eliminar()
     {
         var eliminado = await tiposTecnicosServices.Eliminar(tiposTecnicos.TiposTecnicosId);
-        Nuevo();
+        await Nuevo();
     }
 
     private void Volver()
