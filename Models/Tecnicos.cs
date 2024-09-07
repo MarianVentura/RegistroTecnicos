@@ -13,9 +13,9 @@ public class Tecnicos
 
     public decimal SueldoHora { get; set; }
 
-    [ForeignKey("TiposTecnicos")]
-    public int TiposTecnicosId { get; set; }
-    public TiposTecnicos? TiposTecnicos {  get; set; }
+    [ForeignKey("TipoTecnico")]
+    public int TipoTecnicoId { get; set; }
+    public TiposTecnicos? TipoTecnico {  get; set; }
 
      
 }

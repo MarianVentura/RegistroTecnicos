@@ -6,12 +6,10 @@ namespace RegistroTecnicos.Models
     {
         [Key]
 
-        public int TiposTecnicosId { get; set; }
+        public int TipoTecnicoId { get; set; }
         [Required(ErrorMessage = "Campo Obligatorio")]
         [RegularExpression(@"[a-zA-Z\s]+$", ErrorMessage = "No se permiten caracteres ni números, solo letras.")]
         public string? Descripcion { get; set; }
-
-        public bool Activo { get; set; }
 
     }
 }
