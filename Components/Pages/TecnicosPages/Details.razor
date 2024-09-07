@@ -1,6 +1,7 @@
 ﻿@page "/TecnicoDetails/"
 @page "/Tecnico/Details/{TecnicoId:int}"
 @inject TecnicoServices tecnicoServices
+@inject TiposTecnicosServices tiposTecnicosServices
 @inject NavigationManager navigationManager
 @rendermode InteractiveServer
 
@@ -20,11 +21,11 @@
                         <div class="card-body">
                             <ul class="list-unstyled">
                                 <li><strong>T&eacute;cnicoId:</strong> @tecnico.TecnicoId</li>
-                                <li><strong>Nombre:</strong> @tecnico.Nombres</li>
+                                <li><strong>Nombres:</strong> @tecnico.Nombres</li>
                                 <li><strong>SueldoHora:</strong> @tecnico.SueldoHora</li>
+                                <li><strong>Descripción:</strong> @tipoTecnicoDescripcion</li>
                             </ul>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -43,10 +44,17 @@ else
     [Parameter]
     public int TecnicoId { get; set; }
     public Tecnicos? tecnico { get; set; }
+    private string tipoTecnicoDescripcion = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
         tecnico = await tecnicoServices.Buscar(TecnicoId);
+
+        if (tecnico != null)
+        {
+            var tipoTecnico = await tiposTecnicosServices.Buscar(tecnico.TipoTecnicoId);
+            tipoTecnicoDescripcion = tipoTecnico?.Descripcion ?? "Tipo de técnico no asignado";
+        }
     }
 
     public void Volver()
