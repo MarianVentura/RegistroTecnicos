@@ -1,6 +1,7 @@
 ﻿@page "/Tecnico/Edit/"
 @page "/Tecnico/Edit/{TecnicoId:int}"
 @inject TecnicoServices tecnicoServices
+@inject TiposTecnicosServices tiposTecnicosServices
 @inject NavigationManager navigationManager
 @rendermode InteractiveServer
 
@@ -36,6 +37,19 @@
                 }
             </div>
 
+            @*TiposTecnicos*@
+            <div class="mb-3">
+                <label for="TipoTecnicoId" class="form-label">Tipo de Técnico:</label>
+                <InputSelect @bind-Value="tecnicos.TipoTecnicoId" class="form-control">
+                    <option value="">Seleccione un tipo de técnico</option>
+                    @foreach (var tiposTecnicos in ListaTiposTecnicos)
+                    {
+                        <option value="@tiposTecnicos.TipoTecnicoId">@tiposTecnicos.Descripcion</option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => tecnicos.TipoTecnicoId)" />
+            </div>
+
             @*SueldoHora*@
             <div class="mb-3">
                 <label> SueldoHora </label>
@@ -59,9 +73,12 @@
     public int TecnicoId { get; set; }
     public Tecnicos tecnicos { get; set; } = new Tecnicos();
     private bool Existe = false;
+    private List<TiposTecnicos> ListaTiposTecnicos { get; set; } = new List<TiposTecnicos>();
 
     protected override async Task OnInitializedAsync()
     {
+        ListaTiposTecnicos = await tiposTecnicosServices.Listar(t => true);
+
         if (TecnicoId != 0)
         {
             await Buscar();
