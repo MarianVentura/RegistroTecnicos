@@ -1,5 +1,5 @@
-﻿@page "/Tecnicos/TiposTecnicos/Delete"
-@page "/Tecnicos/TiposTecnicos/Delete/{TiposTecnicosId:int}"
+﻿@page "/TipoTecnico/Delete"
+@page "/TipoTecnico/Delete/{TipoTecnicoId:int}"
 @inject TiposTecnicosServices tiposTecnicosServices
 @inject NavigationManager navigationManager
 @rendermode InteractiveServer
@@ -30,9 +30,8 @@
                                       <div class="row">
                                          <div class="col-md-8">
                                             <ul class="list-unstyled">
-                                                <li><strong>TiposTecnicosId:</strong> @tiposTecnicos.TiposTecnicosId</li>
+                                                <li><strong>TiposTecnicosId:</strong> @tiposTecnicos.TipoTecnicoId</li>
                                                 <li><strong>Descripción:</strong> @tiposTecnicos.Descripcion</li>
-                                                <li><strong>Activo:</strong>(@tiposTecnicos.Activo ? "Sí" : "No"</li>
                                             </ul>
                                          </div>
                                        </div>
@@ -56,25 +55,25 @@
 @code {
 
     [Parameter]
-    public int TiposTecnicosId { get; set; }
+    public int TipoTecnicoId { get; set; }
     public TiposTecnicos? tiposTecnicos { get; set; } = new TiposTecnicos();
 
     protected override async Task OnInitializedAsync()
     {
-        if (TiposTecnicosId != 0)
+        if (TipoTecnicoId != 0)
         {
-            tiposTecnicos = await tiposTecnicosServices.Buscar(TiposTecnicosId);
+            tiposTecnicos = await tiposTecnicosServices.Buscar(TipoTecnicoId);
         }
     }
 
     public async Task EliminarTiposTecnicos()
     {
-        if (TiposTecnicosId == 0 || tiposTecnicos == null)
+        if (TipoTecnicoId == 0 || tiposTecnicos == null)
         {
             return;
         }
 
-        if (await tiposTecnicosServices.Eliminar(TiposTecnicosId))
+        if (await tiposTecnicosServices.Eliminar(TipoTecnicoId))
         {
             Volver();
         }
@@ -82,6 +81,6 @@
 
     public void Volver()
     {
-        navigationManager.NavigateTo("/Tecnicos/TiposTecnicos/Index");
+        navigationManager.NavigateTo("/TipoTecnico/Index");
     }
 }
