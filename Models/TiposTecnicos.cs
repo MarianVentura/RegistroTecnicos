@@ -11,6 +11,7 @@ namespace RegistroTecnicos.Models
         [RegularExpression(@"[a-zA-Z\s]+$", ErrorMessage = "No se permiten caracteres ni números, solo letras.")]
         public string? Descripcion { get; set; }
 
+        public bool Activo { get; set; }
 
     }
 }
