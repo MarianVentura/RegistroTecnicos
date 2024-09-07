@@ -4,7 +4,7 @@ using RegistroTecnicos.Models;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace RegistroTecnicos;
+namespace RegistroTecnicos.Services;
 
 public class TiposTecnicosServices
 {
@@ -17,13 +17,13 @@ public class TiposTecnicosServices
 
     public async Task<bool> ExisteTipoId(int tiposTecnicosId)
     {
-        return await _contexto.TiposTecnicos.AnyAsync(tipos => tipos.TiposTecnicosId == tiposTecnicosId);
+        return await _contexto.TiposTecnicos.AnyAsync(t => t.TiposTecnicosId == tiposTecnicosId);
 
     }
 
     public async Task<bool> ExisteTipoDescripcion(string? descripcion)
     {
-        return await _contexto.TiposTecnicos.AnyAsync(tipos => tipos.Descripcion == descripcion);
+        return await _contexto.TiposTecnicos.AnyAsync(t => t.Descripcion == descripcion);
     }
 
     private async Task<bool> Insertar(TiposTecnicos tiposTecnicos)
@@ -41,7 +41,7 @@ public class TiposTecnicosServices
 
     public async Task<bool> Guardar(TiposTecnicos tiposTecnicos)
     {
-        if(!await ExisteTipoId(tiposTecnicos.TiposTecnicosId))
+        if (!await ExisteTipoId(tiposTecnicos.TiposTecnicosId))
             return await Insertar(tiposTecnicos);
         else
             return await Modificar(tiposTecnicos);
@@ -57,7 +57,7 @@ public class TiposTecnicosServices
     {
         return await _contexto.TiposTecnicos
             .AsNoTracking()
-            .FirstOrDefaultAsync(tipos => tipos.TiposTecnicosId == id);
+            .FirstOrDefaultAsync(t => t.TiposTecnicosId == id);
     }
 
     public async Task<List<TiposTecnicos>> Listar(Expression<Func<TiposTecnicos, bool>> criterio)
