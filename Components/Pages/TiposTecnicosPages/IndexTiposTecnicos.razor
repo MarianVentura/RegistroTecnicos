@@ -62,17 +62,17 @@
                         <td>@tipos.Descripcion</td>
                         <td>@(tipos.Activo ? "Sí" : "No")</td>
                         <td>
-                            <a class="btn btn-outline-primary" href="/TiposTecnicos/Details/@tipos.TiposTecnicosId">
+                            <a class="btn btn-outline-primary" href="/Tecnicos/TiposTecnicos/Details/@tipos.TiposTecnicosId">
                                 <span class="bi bi-eye-fill"></span>    
                             </a>
                         </td>
                         <td>
-                            <a class="btn btn-outline-success" href="/TiposTecnicos/Edit/@tipos.TiposTecnicosId">
+                            <a class="btn btn-outline-success" href="/Tecnicos/TiposTecnicos/Edit/@tipos.TiposTecnicosId">
                                 <span class="bi bi-pencil-square"></span>    
                             </a>
                         </td>
                         <td>
-                            <a class="btn btn-outline-danger" href="TiposTecnicos/Delete/@tipos.TiposTecnicosId">
+                            <a class="btn btn-outline-danger" href="/Tecnicos/TiposTecnicos/Delete/@tipos.TiposTecnicosId">
                                     <span class="bi bi-trash"></span>
                             </a>
                         </td>
@@ -90,7 +90,7 @@
 @code {
     public List<TiposTecnicos> ListaTiposTecnicos { get; set; } = new List<TiposTecnicos>();
     private string filtro = "id";
-    private string valorFiltro;
+    private string? valorFiltro;
 
     protected override async Task OnInitializedAsync()
     {
@@ -103,11 +103,11 @@
         {
             if (filtro == "id" && int.TryParse(valorFiltro, out int TiposTecnicosId))
             {
-                ListaTiposTecnicos = await tiposTecnicosServices.Listar(t => t.TiposTecnicosId == TiposTecnicosId);
+                ListaTiposTecnicos = await tiposTecnicosServices.Listar(tipos => tipos.TiposTecnicosId == TiposTecnicosId);
             }
             else if (filtro == "descripcion")
             {
-                ListaTiposTecnicos = await tiposTecnicosServices.Listar(t => t.Descripcion.Contains(valorFiltro, StringComparison.OrdinalIgnoreCase));
+                ListaTiposTecnicos = await tiposTecnicosServices.Listar(tipos => tipos.Descripcion.Contains(valorFiltro, StringComparison.OrdinalIgnoreCase));
             }
         }
         else
@@ -118,16 +118,16 @@
 
     private void IrADetalles(int TiposTecnicosId)
     {
-        navigationManager.NavigateTo($"/TiposTecnicos/Details/{TiposTecnicosId:int}");
+        navigationManager.NavigateTo($"/Tecnicos/TiposTecnicos/Details/{TiposTecnicosId:int}");
     }
 
     private void IrAEditar(int TiposTecnicosId)
     {
-        navigationManager.NavigateTo($"/TiposTecnicos/Edit/{TiposTecnicosId:int}");
+        navigationManager.NavigateTo($"/Tecnicos/TiposTecnicos/Edit/{TiposTecnicosId:int}");
     }
 
     private void IrEliminar(int TiposTecnicosId)
     {
-        navigationManager.NavigateTo($"/TiposTecnicos/Delete/{TiposTecnicosId:int}");
+        navigationManager.NavigateTo($"/Tecnicos/TiposTecnicos/Delete/{TiposTecnicosId:int}");
     }
 }
