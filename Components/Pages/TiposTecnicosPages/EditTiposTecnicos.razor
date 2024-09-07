@@ -1,5 +1,5 @@
-﻿@page "/Tecnicos/TiposTecnicos/Edit"
-@page "/Tecnicos/TiposTecnicos/Edit/{TiposTecnicosId:int}"
+﻿@page "/TipoTecnico/Edit"
+@page "/TipoTecnico/Edit/{TipoTecnicoId:int}"
 @inject TiposTecnicosServices tiposTecnicosServices
 @inject NavigationManager navigationManager
 @rendermode InteractiveServer
@@ -18,9 +18,9 @@
                     <label for="TiposTecnicosId" class="form-label">Tipo de T&eacute;cnico:</label>
                     <div class="input-group">
                         <div style="width: 40%; height: 1em;">
-                            <InputNumber @bind-Value="tiposTecnicos.TiposTecnicosId" class="form-control" style="font-size: 0.8em;" aria-describedby="BotonBuscar" />
+                            <InputNumber @bind-Value="tiposTecnicos.TipoTecnicoId" class="form-control" style="font-size: 0.8em;" aria-describedby="BotonBuscar" />
                         </div>
-                        <ValidationMessage For="@(() => tiposTecnicos.TiposTecnicosId)" />
+                        <ValidationMessage For="@(() => tiposTecnicos.TipoTecnicoId)" />
                     </div>
                 </div>
             </div>
@@ -35,18 +35,13 @@
                     <p class="text-danger">Ya existe un tipo de técnico con esta descripción.</p>
                 }
             </div>
-
-           @*Activo*@
-           <label>Activo:</label>
-           <InputCheckbox @BindAttributes-Value="tiposTecnicos.Activo" class="form-control" />
-           <ValidationMessage For="@(() => tiposTecnicos.Activo)" />
     </div>
 
     <div class="card-footer bg-light d-flex justify-content-center mt-3">
         <div class="btn-group">
             <button type="submit" class="btn btn-outline-success ml-2"><span class="bi bi-check-circle-fill"></span> Guardar </button>
             <button type="button" class="btn btn-outline-danger" @onclick="Eliminar"><span class="bi bi-trash-fill"></span> Eliminar </button>
-            <button type="button" class="btn btn-outline-primary" @onclick"Volver"><span class="bi bi-arrow-left-square-fill"></span> Volver </button>
+            <button type="button" class="btn btn-outline-primary" @onclick="Volver"><span class="bi bi-arrow-left-square-fill"></span> Volver </button>
         </div>
     </div>
   </div>
@@ -54,13 +49,13 @@
 
 @code {
     [Parameter]
-    public int TiposTecnicosId { get; set; }
+    public int TipoTecnicoId { get; set; }
     public TiposTecnicos tiposTecnicos { get; set; } = new TiposTecnicos();
     private bool Existe = false;
 
     protected override async Task OnInitializedAsync()
     {
-        if(TiposTecnicosId != 0)
+        if(TipoTecnicoId != 0)
         {
             await Buscar();
         }
@@ -75,7 +70,7 @@
     public async Task Buscar()
     {
         Existe = false;
-        var tiposTecnicosEncontrado = await tiposTecnicosServices.Buscar(TiposTecnicosId);
+        var tiposTecnicosEncontrado = await tiposTecnicosServices.Buscar(TipoTecnicoId);
 
         if (tiposTecnicosEncontrado != null)
         {
@@ -103,18 +98,18 @@
 
     public async Task Eliminar()
     {
-        var eliminado = await tiposTecnicosServices.Eliminar(tiposTecnicos.TiposTecnicosId);
+        var eliminado = await tiposTecnicosServices.Eliminar(tiposTecnicos.TipoTecnicoId);
         Nuevo();
     }
 
     private void Volver()
     {
-        navigationManager.NavigateTo("/Tecnicos/TiposTecnicos/Index");
+        navigationManager.NavigateTo("/TipoTecnico/Index");
     }
 
     public async Task<bool> Validar()
     {
-        var listaTiposTecnicos = await tiposTecnicosServices.Listar(t => t.Descripcion.ToLower() == tiposTecnicos.Descripcion.ToLower() && tipos.TiposTecnicosId != tiposTecnicos.TiposTecnicosId);
+        var listaTiposTecnicos = await tiposTecnicosServices.Listar(t => t.Descripcion.ToLower() == tiposTecnicos.Descripcion.ToLower() && t.TipoTecnicoId != tiposTecnicos.TipoTecnicoId);
         Existe = listaTiposTecnicos.Any();
         return Existe;
     }
