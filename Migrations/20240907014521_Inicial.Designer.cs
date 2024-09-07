@@ -10,8 +10,8 @@ using RegistroTecnicos.DAL;
 namespace RegistroTecnicos.Migrations
 {
     [DbContext(typeof(Contexto))]
-    [Migration("20240905210757_AddTiposTecnicosTable")]
-    partial class AddTiposTecnicosTable
+    [Migration("20240907014521_Inicial")]
+    partial class Inicial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,27 +32,30 @@ namespace RegistroTecnicos.Migrations
                     b.Property<decimal>("SueldoHora")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("TipoTecnicoId")
+                    b.Property<int>("TiposTecnicosId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("TecnicoId");
 
-                    b.HasIndex("TipoTecnicoId");
+                    b.HasIndex("TiposTecnicosId");
 
                     b.ToTable("Tecnicos");
                 });
 
             modelBuilder.Entity("RegistroTecnicos.Models.TiposTecnicos", b =>
                 {
-                    b.Property<int>("TipoTecnicoId")
+                    b.Property<int>("TiposTecnicosId")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("Activo")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Descripcion")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.HasKey("TipoTecnicoId");
+                    b.HasKey("TiposTecnicosId");
 
                     b.ToTable("TiposTecnicos");
                 });
@@ -61,7 +64,7 @@ namespace RegistroTecnicos.Migrations
                 {
                     b.HasOne("RegistroTecnicos.Models.TiposTecnicos", "TiposTecnicos")
                         .WithMany()
-                        .HasForeignKey("TipoTecnicoId")
+                        .HasForeignKey("TiposTecnicosId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
