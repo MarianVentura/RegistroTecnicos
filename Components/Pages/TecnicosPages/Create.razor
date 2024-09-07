@@ -1,5 +1,6 @@
 ﻿@page "/Tecnico/create"
 @inject TecnicoServices tecnicoServices
+@inject TiposTecnicosServices tiposTecnicosServices
 @inject NavigationManager navigationManager
 @rendermode InteractiveServer
 
@@ -30,10 +31,24 @@
                 <label for="Nombres" class="form-label">Nombres:</label>
                 <InputText @bind-Value="tecnico.Nombres" class="form-control" />
                 <ValidationMessage For="@(() => tecnico.Nombres)" />
-                @if (Existe)
+                @*  @if (Existe)
                 {
-                    <p class="text-danger">Ya existe una persona que tiene este nombre.</p>
-                }
+                <p class="text-danger">Ya existe una persona que tiene este nombre.</p>
+                } *@
+
+            </div>
+
+            @*TipoTecnico*@
+            <div class="mb-3">
+                <label for="TipoTecnico" class="form-label">Tipo de Técnico</label>
+                <InputSelect class="form-select" @bind-Value="tecnico.TiposTecnicosId">
+                    <option =" 0 " selected disabled> Seleccione un tipo de técnico</option>
+                    @foreach (var tiposTecnicos in ListaTiposTecnicos)
+                    {
+                        <option value="@tecnico.TiposTecnicosId"> @tiposTecnicos.Descripcion</option>
+                    }
+                </InputSelect>
+
             </div>
 
             @*SueldoHora*@
@@ -60,7 +75,13 @@
     public int TecnicoId { get; set; }
 
     public Tecnicos tecnico { get; set; } = new Tecnicos();
+    public List<TiposTecnicos> ListaTiposTecnicos { get; set; } = new List<TiposTecnicos>();
     private bool Existe = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        ListaTiposTecnicos = await tiposTecnicosServices.Listar(t => true);
+    }
 
 
     public async Task Nuevo()
