@@ -14,14 +14,13 @@ namespace RegistroTecnicos.Migrations
                 name: "TiposTecnicos",
                 columns: table => new
                 {
-                    TiposTecnicosId = table.Column<int>(type: "INTEGER", nullable: false)
+                    TipoTecnicoId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Descripcion = table.Column<string>(type: "TEXT", nullable: false),
-                    Activo = table.Column<bool>(type: "INTEGER", nullable: false)
+                    Descripcion = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TiposTecnicos", x => x.TiposTecnicosId);
+                    table.PrimaryKey("PK_TiposTecnicos", x => x.TipoTecnicoId);
                 });
 
             migrationBuilder.CreateTable(
@@ -32,23 +31,23 @@ namespace RegistroTecnicos.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Nombres = table.Column<string>(type: "TEXT", nullable: false),
                     SueldoHora = table.Column<decimal>(type: "TEXT", nullable: false),
-                    TiposTecnicosId = table.Column<int>(type: "INTEGER", nullable: false)
+                    TipoTecnicoId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Tecnicos", x => x.TecnicoId);
                     table.ForeignKey(
-                        name: "FK_Tecnicos_TiposTecnicos_TiposTecnicosId",
-                        column: x => x.TiposTecnicosId,
+                        name: "FK_Tecnicos_TiposTecnicos_TipoTecnicoId",
+                        column: x => x.TipoTecnicoId,
                         principalTable: "TiposTecnicos",
-                        principalColumn: "TiposTecnicosId",
+                        principalColumn: "TipoTecnicoId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Tecnicos_TiposTecnicosId",
+                name: "IX_Tecnicos_TipoTecnicoId",
                 table: "Tecnicos",
-                column: "TiposTecnicosId");
+                column: "TipoTecnicoId");
         }
 
         /// <inheritdoc />
