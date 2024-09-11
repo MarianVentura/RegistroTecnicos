@@ -23,6 +23,8 @@ public class Program
 
         builder.Services.AddScoped<TecnicoServices>();
         builder.Services.AddScoped<TiposTecnicosServices>();
+        builder.Services.AddScoped<ClientesServices>();
+        builder.Services.AddScoped<TrabajosServices>();
 
         builder.Services.AddBlazorBootstrap();
 
