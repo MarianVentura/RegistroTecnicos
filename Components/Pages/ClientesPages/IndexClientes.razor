@@ -5,22 +5,32 @@
 
 <PageTitle>Clientes</PageTitle>
 
-<EditForm Model="ListaClientes" class="border shadow-lg p-3 rounded">
+<div class="border shadow-lg p-3 rounded">
     <div class="card-header bg-primary text-white text-center py-2 square">
         <h3 style="font-weight: bold;" class="mb-0 font-weight-bold">Clientes</h3>
     </div>
 
     <div class="row mb-3 align-items-end">
-        <div class="col-mb-3">
+        <div class="col-md-3">
             <label for="Filtro" class="form-label"></label>
             <select @bind="filtro" class="form-select">
-                <option value="" disable selected>Filtrar por:</option>
+                <option value="" disabled selected>Filtrar por:</option>
                 <option value="id">ID</option>
                 <option value="nombres">Nombres</option>
                 <option value="whatsapp">WhatsApp</option>
             </select>
         </div>
+        <div class="col-md-6">
+            <label for="ValorFiltro" class="form-label"></label>
+            <div class="input-group">
+                <input @bind="valorFiltro" class="form-control" placeholder="Buscar" />
+                <button @onclick="Buscar" class="btn btn-outline-secondary" type="button">
+                    <span class="bi bi-search"></span>
+                </button>
+            </div>
+        </div>
     </div>
+
 
     <div class="card-body">
         <div class="row">
@@ -76,7 +86,8 @@
     <div class="card-footer text-start">
         <p style="font-weight: bold;">Total de Clientes: @ListaClientes.Count</p>
     </div>
-</EditForm>
+</div>
+
 
 @code {
     public List<Clientes> ListaClientes { get; set; } = new List<Clientes>();

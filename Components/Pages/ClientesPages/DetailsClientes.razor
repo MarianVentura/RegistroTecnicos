@@ -1,4 +1,5 @@
 ﻿@page "/Clientes/Details"
+@page "/Clientes/Details/{ClienteId:int}"
 @inject ClientesServices clientesServices
 @inject NavigationManager navigationManager
 @rendermode InteractiveServer
@@ -12,12 +13,15 @@
 </div>
 
 <div class="card-body">
+    @*ClienteId*@
     <div class="mb-2">
         <strong>ClienteId:</strong> @cliente.ClienteId
     </div>
+    @*Nombres*@
     <div class="mb-2">
         <strong>Nombre:</strong> @cliente.Nombres
     </div>
+    @*WhatsApp*@
     <div class="mb-2">
         <strong>WhatsApp:</strong> @cliente.WhatsApp
     </div>
@@ -25,10 +29,10 @@
 
 <div class="card-footer text-end">
     <a href="/Clientes/Edit/@cliente.ClienteId" class="btn btn-primary">
-        <span class="bi bi-pencil-square"></span>Editar
+        <span class="bi bi-pencil-square">Editar</span>
     </a>
     <a href="/Clientes/Index/" class="btn-btn-secondary">
-        <span class="bi bi-arrow-left-square-fill"></span> Volver
+        <span class="bi bi-arrow-left-square-fill">Volver</span> 
     </a>
 </div>
 @code {
