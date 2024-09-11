@@ -11,13 +11,22 @@
     </div>
 
     <div class="row mb-3 align-items-end">
-        <div class="col-mb-3">
+        <div class="col-md-3">
             <label for="Filtro" class="form-label"></label>
             <select @bind="filtro" class="form-select">
                 <option value="" disable selected>Filtrar por:</option>
                 <option value="id">ID</option>
                 <option value="descripcion">Descripci&oacute;n</option>
             </select>
+        </div>
+        <div class="col-md-6">
+            <label for="ValorFiltro" class="form-label"></label>
+            <div class="input-group">
+                <input @bind="valorFiltro" class="form-control" placeholder="Buscar" />
+                <button @onclick="Buscar" class="btn btn-outline-secondary" type="button">
+                    <span class="bi bi-search"></span>
+                </button>
+            </div>
         </div>
     </div>
 
