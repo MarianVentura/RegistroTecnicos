@@ -1,0 +1,44 @@
+﻿@page "/Clientes/Details"
+@inject ClientesServices clientesServices
+@inject NavigationManager navigationManager
+@rendermode InteractiveServer
+
+<PageTitle>Detalles del Cliente</PageTitle>
+
+<div class="border shadow-lg p-3 rounded">
+    <div class="card-header bg-primary text-white text-center py-2 square">
+        <h3 style="font-weight: bold;" class="mb-0 font-weight-bold">Detalles del Cliente</h3>
+    </div>
+</div>
+
+<div class="card-body">
+    <div class="mb-2">
+        <strong>ClienteId:</strong> @cliente.ClienteId
+    </div>
+    <div class="mb-2">
+        <strong>Nombre:</strong> @cliente.Nombres
+    </div>
+    <div class="mb-2">
+        <strong>WhatsApp:</strong> @cliente.WhatsApp
+    </div>
+</div>
+
+<div class="card-footer text-end">
+    <a href="/Clientes/Edit/@cliente.ClienteId" class="btn btn-primary">
+        <span class="bi bi-pencil-square"></span>Editar
+    </a>
+    <a href="/Clientes/Index/" class="btn-btn-secondary">
+        <span class="bi bi-arrow-left-square-fill"></span> Volver
+    </a>
+</div>
+@code {
+    [Parameter]
+    public int ClienteId { get; set; }
+
+    private Clientes cliente = new Clientes();
+
+    protected override async Task OnInitializedAsync()
+    {
+        cliente = await clientesServices.Buscar(ClienteId) ?? new Clientes();
+    }
+}
