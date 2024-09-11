@@ -1,0 +1,52 @@
+﻿@page "/Clientes/Edit"
+@page "/Clientes/Edit/{ClienteId:int}"
+@inject ClientesServices clientesServices
+@inject NavigationManager navigationManager
+@rendermode InteractiveServer
+
+<PageTitle>Editar Cliente</PageTitle>
+
+<EditForm Model="cliente" OnValidSubmit="Guardar" class="border shadow-lg p-3 rounded">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="card-header bg-primary text-white text-center py-2 square">
+        <h3 style="font-weight: bold;" class="mb-0 font-weight-bold">Editar Cliente</h3>
+    </div>
+
+    <div class="card-body">
+        <div class="form-group">
+            <label for="Nombres">Nombre</label>
+            <InputText id="Nombres" class="form-control" @bind-Value="cliente.Nombres" />
+        </div>
+        <div class="form-group">
+            <label for="WhatsApp">WhatsApp</label>
+            <InputText id="WhatsApp" class="form-control" @bind-Value="cliente.WhatsApp" />
+        </div>
+    </div>
+
+    <div class="card-footer text-end">
+        <button type="submit" class="btn btn-primary">Actualizar</button>
+        <a href="/Clientes" class="btn btn-secondary">Cancelar</a>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int ClienteId { get; set; }
+
+    private Clientes cliente = new Clientes();
+
+    protected override async Task OnInitializedAsync()
+    {
+        cliente = await clientesServices.Buscar(ClienteId) ?? new Clientes();
+    }
+
+    private async Task Guardar()
+    {
+        if (await clientesServices.Guardar(cliente))
+        {
+            navigationManager.NavigateTo("/Clientes");
+        }
+    }
+}
