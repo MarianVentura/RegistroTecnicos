@@ -1,0 +1,45 @@
+﻿@page "/Clientes/Delete"
+@page "/Clientes/Delete{ClienteId:int}"
+@inject ClientesServices clientesServices
+@inject NavigationManager navigationManager
+@rendermode InteractiveServer
+
+<PageTitle>Eliminar Cliente</PageTitle>
+
+<EditForm Model="cliente" OnValidSubmit="EliminarCliente" class="border shadow-lg p-3 rounded">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="card-header bg-danger text-white text-center py-2 square">
+        <h3 style="font-weight: bold;" class="mb-0 font-weight-bold">Eliminar Cliente</h3>
+    </div>
+
+    <div class="card-body">
+        <p>¿Está seguro que desea eliminar al cliente <b>@cliente.Nombres</b>?</p>
+    </div>
+
+    <div class="card-footer text-end">
+        <button type="submit" class="btn btn-danger">Eliminar</button>
+        <a href="/Clientes/Index" class="btn btn-secondary">Volver</a>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int ClienteId { get; set; }
+
+    private Clientes cliente = new Clientes();
+
+    protected override async Task OnInitializedAsync()
+    {
+        cliente = await clientesServices.Buscar(ClienteId) ?? new Clientes();
+    }
+
+    private async Task EliminarCliente()
+    {
+        if (await clientesServices.Eliminar(cliente.ClienteId))
+        {
+            navigationManager.NavigateTo("/Clientes/Index");
+        }
+    }
+}
