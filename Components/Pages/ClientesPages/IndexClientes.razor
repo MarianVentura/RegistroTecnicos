@@ -1,0 +1,106 @@
+﻿@page "/Clientes/Index"
+@inject ClientesServices clientesServices
+@inject NavigationManager navigationManager
+@rendermode InteractiveServer
+
+
+<PageTitle>Clientes</PageTitle>
+
+<div class="border shadow-lg p-3 rounded">
+    <div class="card-header bg-primary text-white text-center py-2 square">
+        <h3 style="font-weight: bold;" class="mb-0 font-weight-bold">Registro de Clientes</h3>
+    </div>
+</div>
+
+<div class="row mb-3 align-items-end">
+    <div class="col-mb-3">
+        <label for="Filtro" class="form-label"></label>
+        <select @bind="filtro" class="form-select">
+            <option value="" disabled selected>Filtrar por:</option>
+            <option value="id">ID</option>
+            <option value="nombre">Nombre</option>
+            <option value="whatsapp">WhatsApp</option>
+        </select>
+    </div>
+    <div class="col-mb-3">
+        <InputText @bind-Value="valorFiltro" class="form-control" placeholder="Buscar..." />
+    </div>
+    <div class="col-mb-3">
+        <button class="btn btn-primary" @onclick="Buscar">Buscar</button>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-bordered text-center">
+        <thead class="bg-primary text-white">
+            <tr>
+                <th>ClienteId</th>
+                <th>Nombres</th>
+                <th>WhatsApp</th>
+                <th>Ver</th>
+                <th>Editar</th>
+                <th>Eliminar</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var cliente in ListaClientes)
+            {
+                <tr>
+                    <td>@cliente.ClienteId</td>
+                    <td>@cliente.Nombres</td>
+                    <td>@cliente.WhatsApp</td>
+                    <td>
+                        <a class="btn btn-outline-primary" href="/Clientes/Details/@cliente.ClienteId">
+                            <span class="bi bi-eye-fill"></span>
+                        </a>
+                    </td>
+                    <td>
+                        <a class="btn btn-outline-success" href="/Clientes/Edit/@cliente.ClienteId">
+                            <span class="bi bi-pencil-square"></span>
+                        </a>
+                    </td>
+                    <td>
+                        <a class="btn btn-outline-danger" href="Clientes/Delete/@cliente.ClienteId">
+                            <span class="bi bi-trash"></span>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="card-footer text-start">
+    <p style="font-weight: bold;">Total de Clientes: @ListaClientes.Count</p>
+</div>
+
+@code {
+    private List<Clientes> ListaClientes { get; set; } = new List<Clientes>();
+    private string filtro = "id";
+    private string? valorFiltro;
+
+    protected override async Task OnInitializedAsync()
+    {
+        ListaClientes = await clientesServices.Listar(c => true);
+    }
+
+    private async Task Buscar()
+    {
+        if (!string.IsNullOrWhiteSpace(valorFiltro))
+        {
+            if (filtro == "id" && int.TryParse(valorFiltro, out int clienteId))
+            {
+                ListaClientes = await clientesServices.Listar(c => c.ClienteId == clienteId);
+            }
+            else if (filtro == "nombre")
+            {
+                ListaClientes = await clientesServices.Listar(c => c.Nombres.Contains(valorFiltro, StringComparison.OrdinalIgnoreCase));
+            }
+        }
+        else
+        {
+            ListaClientes = await clientesServices.Listar(c => true);
+        }
+    }
+
+}
