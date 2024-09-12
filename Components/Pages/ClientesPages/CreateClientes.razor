@@ -4,40 +4,50 @@
 @rendermode InteractiveServer
 
 <PageTitle>Crear Cliente</PageTitle>
-
-<EditForm Model="cliente" OnValidSubmit="GuardarCliente" class="border shadow-lg p-3 rounded">
+<EditForm Model="cliente" OnValidSubmit="Guardar">
     <DataAnnotationsValidator />
-    <ValidationSummary />
-
-    <div class="card-header bg-primary text-white text-center py-2 square">
-        <h3 style="font-weight: bold;" class="mb-0 font-weight-bold">Crear Cliente</h3>
-    </div>
-
-    <div class="card-body">
-        <div class="form-group">
-            <label for="Nombres">Nombre</label>
-            <InputText id="Nombres" class="form-control" @bind-Value="cliente.Nombres" />
+    <div class="card">
+        <div class="card-header bg-primary text-white text-center py-2 rounded">
+            <h3> <i class="fas fa-user"></i> <strong>Crear Cliente</strong></h3>
         </div>
-        <div class="form-group">
-            <label for="WhatsApp">WhatsApp</label>
-            <InputText id="WhatsApp" class="form-control" @bind-Value="cliente.WhatsApp" />
-        </div>
-    </div>
 
-    <div class="card-footer text-end">
-        <button type="submit" class="btn btn-primary">Guardar</button>
-        <a href="/Clientes" class="btn btn-secondary">Cancelar</a>
+        <div class="card-body">
+            @* Nombres *@
+            <div class="mb-3">
+                <label for="Nombres" class="form-label">Nombres</label>
+                <InputText @bind-Value="cliente.Nombres" class="form-control" />
+                <ValidationMessage For="@(() => cliente.Nombres)" />
+            </div>
+
+            @* WhatsApp *@
+            <div class="mb-3">
+                <label for="WhatsApp" class="form-label">WhatsApp</label>
+                <InputText @bind-Value="cliente.WhatsApp" class="form-control" />
+                <ValidationMessage For="@(() => cliente.WhatsApp)" />
+            </div>
+
+            <div class="card-footer bg-light d-flex justify-content-around mt-3">
+                <button type="submit" class="btn btn-success"><span class="bi bi-check-circle-fill"></span> Guardar</button>
+                <button type="button" class="btn btn-primary" @onclick="Volver"><span class="bi bi-arrow-left-square-fill"></span> Volver</button>
+            </div>
+        </div>
     </div>
 </EditForm>
 
 @code {
-    private Clientes cliente = new Clientes();
+    public Clientes cliente { get; set; } = new Clientes();
 
-    private async Task GuardarCliente()
+    private async Task Guardar()
     {
-        if (await clientesServices.Guardar(cliente))
+        var guardo = await clientesServices.Guardar(cliente);
+        if (guardo)
         {
-            navigationManager.NavigateTo("/Clientes");
+            navigationManager.NavigateTo("/Clientes/Index");
         }
+    }
+
+    private void Volver()
+    {
+        navigationManager.NavigateTo("/Clientes/Index");
     }
 }
