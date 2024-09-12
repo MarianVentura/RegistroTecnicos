@@ -1,5 +1,5 @@
-﻿@page "/Cliente/Edit"
-@page "/Cliente/Edit/{ClienteId:int}"
+﻿@page "/Clientes/Edit"
+@page "/Clientes/Edit/{ClienteId:int}"
 @inject ClientesServices clientesServices
 @inject NavigationManager navigationManager
 @rendermode InteractiveServer
@@ -81,18 +81,18 @@
         var guardo = await clientesServices.Guardar(cliente);
         if (guardo)
         {
-            navigationManager.NavigateTo("/Cliente/Index");
+            navigationManager.NavigateTo("/Clientes/Index");
         }
     }
 
     public async Task Eliminar()
     {
         var eliminado = await clientesServices.Eliminar(ClienteId);
-        navigationManager.NavigateTo("/Cliente/Index");
+        navigationManager.NavigateTo("/Clientes/Index");
     }
 
     private void Volver()
     {
-        navigationManager.NavigateTo("/Cliente/Index");
+        navigationManager.NavigateTo("/Clientes/Index");
     }
 }
