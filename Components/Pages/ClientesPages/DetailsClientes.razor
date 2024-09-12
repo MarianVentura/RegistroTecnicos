@@ -6,43 +6,49 @@
 
 <PageTitle>Detalles del Cliente</PageTitle>
 
-<div class="border shadow-lg p-3 rounded">
-    <div class="card-header bg-primary text-white text-center py-2 square">
-        <h3 style="font-weight: bold;" class="mb-0 font-weight-bold">Detalles del Cliente</h3>
+@if (clientesServices != null)
+{
+    <div class="container">
+        <div class="card shadow-header">
+            <div class="card-header bg-primary text-white text-center py-2 rounded">
+                <h3 class="text-center"><strong>Detalles del Cliente</strong></h3>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card-body">
+                            <ul class="list-unstyled">
+                                <li><strong>ClienteId:</strong> @cliente.ClienteId</li>
+                                <li><strong>Nombres:</strong> @cliente.Nombres</li>
+                                <li><strong>WhatsApp:</strong> @cliente.WhatsApp</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button type="button" class="btn btn-primary" @onclick="Volver"><i class="bi bi-arrow-left-square-fill"></i> Volver</button>
+            </div>
+        </div>
     </div>
-</div>
+}
+else
+{
+    <p>Cliente no encontrado.</p>
+}
 
-<div class="card-body">
-    @*ClienteId*@
-    <div class="mb-2">
-        <strong>ClienteId:</strong> @cliente.ClienteId
-    </div>
-    @*Nombres*@
-    <div class="mb-2">
-        <strong>Nombre:</strong> @cliente.Nombres
-    </div>
-    @*WhatsApp*@
-    <div class="mb-2">
-        <strong>WhatsApp:</strong> @cliente.WhatsApp
-    </div>
-</div>
-
-<div class="card-footer text-end">
-    <a href="/Clientes/Edit/@cliente.ClienteId" class="btn btn-primary">
-        <span class="bi bi-pencil-square">Editar</span>
-    </a>
-    <a href="/Clientes/Index/" class="btn-btn-secondary">
-        <span class="bi bi-arrow-left-square-fill">Volver</span> 
-    </a>
-</div>
 @code {
     [Parameter]
     public int ClienteId { get; set; }
-
-    private Clientes cliente = new Clientes();
+    public Clientes? cliente { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        cliente = await clientesServices.Buscar(ClienteId) ?? new Clientes();
+        cliente = await clientesServices.Buscar(ClienteId);
+    }
+
+    public void Volver()
+    {
+        navigationManager.NavigateTo("/Clientes/Index");
     }
 }
