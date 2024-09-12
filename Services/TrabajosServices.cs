@@ -3,16 +3,19 @@ using System.Linq;
 using RegistroTecnicos.DAL;
 using System.Linq.Expressions;
 using RegistroTecnicos.Models;
+using System.Net.Http;
 
 namespace RegistroTecnicos.Services;
 
 public class TrabajosServices
 {
     private readonly Contexto Contexto;
+    private readonly HttpClient _httpClient;
 
-    public TrabajosServices(Contexto contexto)
+    public TrabajosServices(Contexto contexto, HttpClient httpClient)
     {
         Contexto = contexto;
+        _httpClient = httpClient;
     }
 
     //Método Existe
@@ -76,4 +79,25 @@ public class TrabajosServices
             .Where(criterio)
             .ToListAsync();
     }
+
+    //Método Finalizar Trabajo
+    public async Task<bool> FinalizarTrabajo(int trabajoId, TimeSpan tiempo)
+    {
+        var trabajo = await Buscar(trabajoId);
+        if (trabajo != null)
+        {
+            trabajo.Tiempo = tiempo;
+            await Guardar(trabajo);
+
+            //Enviar mensaje de WhatsApp
+            var mensaje = $"El trabajo {trabajoId} ya está finalizado.";
+            var urlWhatsApp = $"https://api.whatsapp.com/send?phone={trabajo.Cliente.WhatsApp}&text={mensaje}";
+
+            var response = await _httpClient.GetAsync(urlWhatsApp);
+                return response.IsSuccessStatusCode;
+        }
+        return false;
+    }
+    
+       
 }
