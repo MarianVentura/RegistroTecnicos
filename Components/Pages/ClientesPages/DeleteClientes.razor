@@ -1,45 +1,87 @@
 ﻿@page "/Clientes/Delete"
-@page "/Clientes/Delete{ClienteId:int}"
+@page "/Clientes/Delete/{ClienteId:int}"
 @inject ClientesServices clientesServices
 @inject NavigationManager navigationManager
 @rendermode InteractiveServer
 
 <PageTitle>Eliminar Cliente</PageTitle>
 
-<EditForm Model="cliente" OnValidSubmit="EliminarCliente" class="border shadow-lg p-3 rounded">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
+<div class="container">
+    <div class="card shadow-header">
+        <div class="card-header bg-primary text-white text-center py-2 rounded">
+            <h3><strong>Eliminar Cliente</strong></h3>
+        </div>
+        <div class="card-header">
+            <h5 class="text-danger">¿Estás seguro de que quieres eliminar este cliente?</h5>
+        </div>
 
-    <div class="card-header bg-danger text-white text-center py-2 square">
-        <h3 style="font-weight: bold;" class="mb-0 font-weight-bold">Eliminar Cliente</h3>
-    </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card shadow-lg">
+                        <div class="card-header">
+                            <h3 class="text-center"><strong>Datos del Cliente</strong></h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="border-primary border-2 borde">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <ul class="list-unstyled">
+                                                <li><strong>ClienteId:</strong> @cliente.ClienteId</li>
+                                                <li><strong>Nombres:</strong> @cliente.Nombres</li>
+                                                <li><strong>WhatsApp:</strong> @cliente.WhatsApp</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <div class="card-body">
-        <p>¿Está seguro que desea eliminar al cliente <b>@cliente.Nombres</b>?</p>
+        <div class="card-footer">
+            <button type="button" class="btn btn-danger" @onclick="EliminarCliente"><i class="bi bi-trash-fill"></i> Eliminar</button>
+            <button type="button" class="btn btn-primary" @oncick="Volver"><i class="bi bi-arrow-left-square-fill"></i> Volver</button>
+        </div>
     </div>
+</div>
 
-    <div class="card-footer text-end">
-        <button type="submit" class="btn btn-danger">Eliminar</button>
-        <a href="/Clientes/Index" class="btn btn-secondary">Volver</a>
-    </div>
-</EditForm>
+@if (cliente == null)
+{
+    <p>Cliente no encontrado.</p>
+}
 
 @code {
     [Parameter]
     public int ClienteId { get; set; }
-
-    private Clientes cliente = new Clientes();
+    public Clientes? cliente { get; set; } = new Clientes();
 
     protected override async Task OnInitializedAsync()
     {
-        cliente = await clientesServices.Buscar(ClienteId) ?? new Clientes();
+        if (ClienteId != 0)
+        {
+            cliente = await clientesServices.Buscar(ClienteId);
+        }
     }
 
-    private async Task EliminarCliente()
+    public async Task EliminarCliente()
     {
-        if (await clientesServices.Eliminar(cliente.ClienteId))
+        if (ClienteId == 0 || cliente == null)
         {
-            navigationManager.NavigateTo("/Clientes/Index");
+            return;
         }
+
+        if (await clientesServices.Eliminar(ClienteId))
+        {
+            Volver();
+        }
+    }
+
+    public void Volver()
+    {
+        navigationManager.NavigateTo("/Cliente/Index");
     }
 }
