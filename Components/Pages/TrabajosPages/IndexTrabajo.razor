@@ -13,13 +13,15 @@
         <h3 style="font-weight: bold;" class="mb-0 font-weight-bold">Trabajos</h3>
     </div>
 
+    @*Filtros*@
     <div class="row mb-3 align-items-end">
         <div class="col-md-3">
             <label for="Filtro" class="form-label"></label>
             <select @bind="filtro" class="form-label">
                 <option value="" disabled selected>Filtrar por:</option>
-                <option value="id">ID</option>
-                <option value="descripcion">Descripción</option>
+                <option value="trabajoId">TrabajoID</option>
+                <option value="nombreCliente">Cliente</option>
+                <option value="nombreTecnico">Técnico</option>
             </select>
         </div>
         <div class="col-md-6">
@@ -33,6 +35,7 @@
         </div>
     </div>
 
+    @*Botón Crear*@
     <div class="card-body">
         <div class="row">
             <div class="col-md-9"></div>
@@ -45,6 +48,7 @@
         </div>
     </div>
 
+    @*Lista de Trabajos*@
     <div class="table-responsive">
         <table class="table table-bordered text-center">
             <thead class="bg-primary text-white">
@@ -52,11 +56,12 @@
                     <th>TrabajoId</th>
                     <th>Fecha</th>
                     <th>ClienteId</th>
-                    <th>Nombre Cliente</th>
+                    <th>Cliente</th>
                     <th>TecnicoId</th>
-                    <th>Nombre Técnico</th>
+                    <th>Técnico</th>
                     <th>Descripci&oacute;n</th>
                     <th>Monto</th>
+                    <th>Tiempo</th>
                     <th>Ver</th>
                     <th>Editar</th>
                     <th>Eliminar</th>
@@ -75,6 +80,7 @@
                         <td>@trabajo.Tecnico?.Nombres</td>
                         <td>@trabajo.Descripcion</td>
                         <td>@trabajo.Monto.ToString("C")</td>
+                        <td>@trabajo.Tiempo</td>
                         <td>
                             <a class="btn btn-outline-primary" href="/Trabajos/Details/@trabajo.TrabajoId">
                                 <span class="bi bi-eye-fill"></span>
@@ -100,14 +106,16 @@
             </tbody>
         </table>
     </div>
+
+
     <div class="card-footer text-start">
         <p style="font-weight: bold;">Total de Trabajos: @ListaTrabajos.Count</p>
     </div>
 </div>
 
-@code{
+@code {
     public List<Trabajos> ListaTrabajos { get; set; } = new List<Trabajos>();
-    private string filtro = "id";
+    private string filtro = "trabajoId";
     private string? valorFiltro;
 
     protected override async Task OnInitializedAsync()
@@ -119,13 +127,17 @@
     {
         if (!string.IsNullOrWhiteSpace(valorFiltro))
         {
-            if (filtro == "id" && int.TryParse(valorFiltro, out int TrabajoId))
+            if (filtro == "trabajoId" && int.TryParse(valorFiltro, out int trabajoId))
             {
-                ListaTrabajos = await trabajosServices.Listar(t => t.TrabajoId == TrabajoId);
+                ListaTrabajos = await trabajosServices.Listar(t => t.TrabajoId == trabajoId);
             }
-            else if (filtro == "descripcion")
+            else if (filtro == "nombreCliente")
             {
-                ListaTrabajos = await trabajosServices.Listar(t => t.Descripcion.Contains(valorFiltro, StringComparison.OrdinalIgnoreCase));
+                ListaTrabajos = await trabajosServices.Listar(t => t.Cliente.Nombres.Contains(valorFiltro, StringComparison.OrdinalIgnoreCase));
+            }
+            else if (filtro == "nombreTecnico")
+            {
+                ListaTrabajos = await trabajosServices.Listar(t => t.Tecnico.Nombres.Contains(valorFiltro, StringComparison.OrdinalIgnoreCase));
             }
         }
         else
@@ -140,5 +152,20 @@
         var urlWhatsApp = $"https://api.whatsapp.com/send?phone={trabajo.Cliente?.WhatsApp}&text={mensaje}";
 
         navigationManager.NavigateTo(urlWhatsApp, true);
+    }
+
+    private void IrADetalles(int trabajoId)
+    {
+        navigationManager.NavigateTo($"/Trabajos/Details/{trabajoId:int}");
+    }
+
+    private void IrAEditar(int trabajoId)
+    {
+        navigationManager.NavigateTo($"/Trabajo/Edit/{trabajoId:int}");
+    }
+
+    private void IrEliminar(int trabajoId)
+    {
+        navigationManager.NavigateTo($"/Trabajos/Delete/{trabajoId:int}");
     }
 }
