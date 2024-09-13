@@ -73,4 +73,12 @@ public class ClientesServices
             .ToListAsync();
     }
 
+    //Método Existe Cliente
+    public async Task<bool> ExisteCliente(int clienteId, string nombres)
+    {
+        return await Contexto.Clientes
+            .AnyAsync(e => e.ClienteId != clienteId && e.Nombres.ToLower().Equals(nombres.ToLower()));
+
+    }
+
 }
