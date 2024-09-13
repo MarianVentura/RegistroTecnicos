@@ -1,5 +1,144 @@
-﻿<h3>IndexTrabajo</h3>
+﻿@page "/Trabajos/Index"
+@inject TrabajosServices trabajosServices
+@inject TecnicoServices tecnicosServices
+@inject ClientesServices clientesServices
+@inject NavigationManager navigationManager
+@inject HttpClient httpClient
+@rendermode InteractiveServer
 
-@code {
+<PageTitle>Trabajos</PageTitle>
 
+<div class="border shadow-lg p-3 rounded">
+    <div class="card-header bg-primary text-white text-center py-2 square">
+        <h3 style="font-weight: bold;" class="mb-0 font-weight-bold">Trabajos</h3>
+    </div>
+
+    <div class="row mb-3 align-items-end">
+        <div class="col-md-3">
+            <label for="Filtro" class="form-label"></label>
+            <select @bind="filtro" class="form-label">
+                <option value="" disabled selected>Filtrar por:</option>
+                <option value="id">ID</option>
+                <option value="descripcion">Descripción</option>
+            </select>
+        </div>
+        <div class="col-md-6">
+            <label for="ValorFiltro" class="form-label"></label>
+            <div class="input-group">
+                <input @bind="valorFiltro" class="form-control" placeholder="Buscar" />
+                <button @onclick="Buscar" class="btn btn-outline-secondary" type="button">
+                    <span class="bi bi-search"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-9"></div>
+            <div class="col-md-3 text-end">
+                <a href="/Trabajos/Create" class="btn btn-success" type="button">
+                    <i class="bi bi-pencil-square"></i>
+                    Crear
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered text-center">
+            <thead class="bg-primary text-white">
+                <tr>
+                    <th>TrabajoId</th>
+                    <th>Fecha</th>
+                    <th>ClienteId</th>
+                    <th>Nombre Cliente</th>
+                    <th>TecnicoId</th>
+                    <th>Nombre Técnico</th>
+                    <th>Descripci&oacute;n</th>
+                    <th>Monto</th>
+                    <th>Ver</th>
+                    <th>Editar</th>
+                    <th>Eliminar</th>
+                    <th>Enviar WhatsApp</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var trabajo in ListaTrabajos)
+                {
+                    <tr>
+                        <td>trabajo.TrabajoId</td>
+                        <td>@trabajo.Fecha.ToShortDateString</td>
+                        <td>@trabajo.ClienteId</td>
+                        <td>@trabajo.Cliente?.Nombres</td>
+                        <td>@trabajo.TecnicoId</td>
+                        <td>@trabajo.Tecnico?.Nombres</td>
+                        <td>@trabajo.Descripcion</td>
+                        <td>@trabajo.Monto.ToString("C")</td>
+                        <td>
+                            <a class="btn btn-outline-primary" href="/Trabajos/Details/@trabajo.TrabajoId">
+                                <span class="bi bi-eye-fill"></span>
+                            </a>
+                        </td>
+                        <td>
+                            <a class="btn btn-outline-success" href="/Trabajos/Edit/@trabajo.TrabajoId">
+                                <span class="bi bi-pencil-square"></span>
+                            </a>
+                        </td>
+                        <td>
+                            <a class="btn btn-outline-danger" href="/Trabajos/Delete/@trabajo.TrabajoId">
+                                <span class="bi bi-trash"></span>
+                            </a>
+                        </td>
+                        <td>
+                            <button class="btn btn-outline-info" onclick="() => EnviarWhatsApp(trabajo)">
+                                <span class="bi bi-whatsapp"></span>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="card-footer text-start">
+        <p style="font-weight: bold;">Total de Trabajos: @ListaTrabajos.Count</p>
+    </div>
+</div>
+
+@code{
+    public List<Trabajos> ListaTrabajos { get; set; } = new List<Trabajos>();
+    private string filtro = "id";
+    private string? valorFiltro;
+
+    protected override async Task OnInitializedAsync()
+    {
+        ListaTrabajos = await trabajosServices.Listar(t => t.TrabajoId > 0);
+    }
+
+    private async Task Buscar()
+    {
+        if (!string.IsNullOrWhiteSpace(valorFiltro))
+        {
+            if (filtro == "id" && int.TryParse(valorFiltro, out int TrabajoId))
+            {
+                ListaTrabajos = await trabajosServices.Listar(t => t.TrabajoId == TrabajoId);
+            }
+            else if (filtro == "descripcion")
+            {
+                ListaTrabajos = await trabajosServices.Listar(t => t.Descripcion.Contains(valorFiltro, StringComparison.OrdinalIgnoreCase));
+            }
+        }
+        else
+        {
+            ListaTrabajos = await trabajosServices.Listar(t => true);
+        }
+    }
+
+    private async Task EnviarWhatsApp(Trabajos trabajo)
+    {
+        var mensaje = $"El trabajo {trabajo.TrabajoId} ya está finalizado.";
+        var urlWhatsApp = $"https://api.whatsapp.com/send?phone={trabajo.Cliente?.WhatsApp}&text={mensaje}";
+
+        navigationManager.NavigateTo(urlWhatsApp, true);
+    }
 }
