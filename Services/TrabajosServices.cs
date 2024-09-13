@@ -81,7 +81,7 @@ public class TrabajosServices
     }
 
     //Método Finalizar Trabajo
-    public async Task<bool> FinalizarTrabajo(int trabajoId, TimeSpan tiempo)
+    public async Task<bool> FinalizarTrabajo(int trabajoId, int tiempo)
     {
         var trabajo = await Buscar(trabajoId);
         if (trabajo != null)
