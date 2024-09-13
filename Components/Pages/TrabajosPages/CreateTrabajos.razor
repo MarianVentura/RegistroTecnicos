@@ -1,16 +1,16 @@
 ﻿@page "/Trabajos/Create"
 @inject TrabajosServices trabajosServices
-@inject TecnicoServices tecnicosServices
-@inject ClientesServices clientesServices
 @inject NavigationManager navigationManager
-@rendermode InteractiveServer
+@inject ClientesServices clientesServices
+@inject TecnicoServices tecnicosServices
 
 <PageTitle>Crear Trabajo</PageTitle>
+
 <EditForm Model="trabajo" OnValidSubmit="Guardar">
     <DataAnnotationsValidator />
     <div class="card">
         <div class="card-header bg-primary text-white text-center py-2 rounded">
-            <h3><i class="fas fa-tasks"></i> <strong>Crear Trabajo</strong></h3>
+            <h3> <i class="fas fa-briefcase"></i> <strong>Crear Trabajo</strong></h3>
         </div>
 
         <div class="card-body">
@@ -24,33 +24,33 @@
             @* Cliente *@
             <div class="mb-3">
                 <label for="ClienteId" class="form-label">Cliente</label>
-                <InputSelect @bind-Value="trabajo.ClienteId" class="form-control">
-                    <option value="">Seleccione un cliente</option>
+                <select @bind-Value="trabajo.ClienteId" class="form-control" @onchange="OnClienteChanged">
+                    <option value="">Seleccione un Cliente</option>
                     @foreach (var cliente in listaClientes)
                     {
                         <option value="@cliente.ClienteId">@cliente.Nombres</option>
                     }
-                </InputSelect>
+                </select>
                 <ValidationMessage For="@(() => trabajo.ClienteId)" />
             </div>
 
             @* Técnico *@
             <div class="mb-3">
                 <label for="TecnicoId" class="form-label">Técnico</label>
-                <InputSelect @bind-Value="trabajo.TecnicoId" class="form-control">
-                    <option value="">Seleccione un técnico</option>
+                <select @bind-Value="trabajo.TecnicoId" class="form-control">
+                    <option value="">Seleccione un Técnico</option>
                     @foreach (var tecnico in listaTecnicos)
                     {
                         <option value="@tecnico.TecnicoId">@tecnico.Nombres</option>
                     }
-                </InputSelect>
+                </select>
                 <ValidationMessage For="@(() => trabajo.TecnicoId)" />
             </div>
 
             @* Descripción *@
             <div class="mb-3">
                 <label for="Descripcion" class="form-label">Descripción</label>
-                <InputTextArea @bind-Value="trabajo.Descripcion" class="form-control" />
+                <InputText @bind-Value="trabajo.Descripcion" class="form-control" />
                 <ValidationMessage For="@(() => trabajo.Descripcion)" />
             </div>
 
@@ -61,11 +61,18 @@
                 <ValidationMessage For="@(() => trabajo.Monto)" />
             </div>
 
-            @* Tiempo*@
+            @* Tiempo (en horas) *@
             <div class="mb-3">
-                <label for="Tiempo" class="form-label">Tiempo (hh:mm)</label>
+                <label for="Tiempo" class="form-label">Tiempo (en horas)</label>
                 <InputNumber @bind-Value="trabajo.Tiempo" class="form-control" />
                 <ValidationMessage For="@(() => trabajo.Tiempo)" />
+            </div>
+
+            @* WhatsApp del Cliente *@
+            <div class="mb-3">
+                <label for="WhatsApp" class="form-label">WhatsApp del Cliente</label>
+                <InputText @bind-Value="whatsAppCliente" class="form-control" disabled />
+                <ValidationMessage For="@(() => whatsAppCliente)" />
             </div>
 
             <div class="card-footer bg-light d-flex justify-content-around mt-3">
@@ -80,11 +87,26 @@
     public Trabajos trabajo { get; set; } = new Trabajos();
     public List<Clientes> listaClientes { get; set; } = new List<Clientes>();
     public List<Tecnicos> listaTecnicos { get; set; } = new List<Tecnicos>();
+    public string? whatsAppCliente { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         listaClientes = await clientesServices.Listar(c => c.ClienteId > 0);
         listaTecnicos = await tecnicosServices.Listar(t => t.TecnicoId > 0);
+    }
+
+    private void OnClienteChanged(ChangeEventArgs e)
+    {
+        var clienteId = int.Parse(e.Value.ToString() ?? "0");
+        var clienteSeleccionado = listaClientes.FirstOrDefault(c => c.ClienteId == clienteId);
+        if (clienteSeleccionado != null)
+        {
+            whatsAppCliente = clienteSeleccionado.WhatsApp;
+        }
+        else
+        {
+            whatsAppCliente = null;
+        }
     }
 
     private async Task Guardar()
@@ -96,11 +118,8 @@
         }
     }
 
-
     private void Volver()
     {
         navigationManager.NavigateTo("/Trabajos/Index");
     }
-
-
 }
