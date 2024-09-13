@@ -3,7 +3,6 @@
 @inject TecnicoServices tecnicosServices
 @inject ClientesServices clientesServices
 @inject NavigationManager navigationManager
-@inject HttpClient httpClient
 @rendermode InteractiveServer
 
 <PageTitle>Trabajos</PageTitle>
@@ -17,7 +16,7 @@
     <div class="row mb-3 align-items-end">
         <div class="col-md-3">
             <label for="Filtro" class="form-label"></label>
-            <select @bind="filtro" class="form-label">
+            <select @bind="filtro" class="form-label form-select">
                 <option value="" disabled selected>Filtrar por:</option>
                 <option value="trabajoId">TrabajoID</option>
                 <option value="nombreCliente">Cliente</option>
@@ -41,8 +40,7 @@
             <div class="col-md-9"></div>
             <div class="col-md-3 text-end">
                 <a href="/Trabajos/Create" class="btn btn-success" type="button">
-                    <i class="bi bi-pencil-square"></i>
-                    Crear
+                    <i class="bi bi-pencil-square"></i> Crear
                 </a>
             </div>
         </div>
@@ -55,11 +53,9 @@
                 <tr>
                     <th>TrabajoId</th>
                     <th>Fecha</th>
-                    <th>ClienteId</th>
                     <th>Cliente</th>
-                    <th>TecnicoId</th>
                     <th>Técnico</th>
-                    <th>Descripci&oacute;n</th>
+                    <th>Descripción</th>
                     <th>Monto</th>
                     <th>Tiempo</th>
                     <th>Ver</th>
@@ -72,15 +68,13 @@
                 @foreach (var trabajo in ListaTrabajos)
                 {
                     <tr>
-                        <td>trabajo.TrabajoId</td>
-                        <td>@trabajo.Fecha.ToShortDateString</td>
-                        <td>@trabajo.ClienteId</td>
-                        <td>@trabajo.Cliente?.Nombres</td>
-                        <td>@trabajo.TecnicoId</td>
-                        <td>@trabajo.Tecnico?.Nombres</td>
+                        <td>@trabajo.TrabajoId</td>
+                        <td>@trabajo.Fecha.ToShortDateString()</td>
+                        <td>@trabajo.Cliente?.Nombres ?? "Desconocido"</td>
+                        <td>@trabajo.Tecnico?.Nombres ?? "Desconocido"</td>
                         <td>@trabajo.Descripcion</td>
                         <td>@trabajo.Monto.ToString("C")</td>
-                        <td>@trabajo.Tiempo</td>
+                        <td>@trabajo.Tiempo.ToString() + " hrs"</td>
                         <td>
                             <a class="btn btn-outline-primary" href="/Trabajos/Details/@trabajo.TrabajoId">
                                 <span class="bi bi-eye-fill"></span>
@@ -97,16 +91,22 @@
                             </a>
                         </td>
                         <td>
-                            <button class="btn btn-outline-info" onclick="() => EnviarWhatsApp(trabajo)">
-                                <span class="bi bi-whatsapp"></span>
-                            </button>
+                            @if (trabajo.Cliente != null && !string.IsNullOrWhiteSpace(trabajo.Cliente.WhatsApp))
+                            {
+                                <button class="btn btn-outline-info" @onclick="() => EnviarWhatsApp(trabajo)">
+                                    <span class="bi bi-whatsapp"></span> Enviar
+                                </button>
+                            }
+                            else
+                            {
+                                <span>No disponible</span>
+                            }
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
-
 
     <div class="card-footer text-start">
         <p style="font-weight: bold;">Total de Trabajos: @ListaTrabajos.Count</p>
@@ -120,7 +120,13 @@
 
     protected override async Task OnInitializedAsync()
     {
-        ListaTrabajos = await trabajosServices.Listar(t => t.TrabajoId > 0);
+        await CargarTrabajos();
+    }
+
+    private async Task CargarTrabajos()
+    {
+      
+        ListaTrabajos = await trabajosServices.Listar(t => true);
     }
 
     private async Task Buscar()
@@ -133,39 +139,24 @@
             }
             else if (filtro == "nombreCliente")
             {
-                ListaTrabajos = await trabajosServices.Listar(t => t.Cliente.Nombres.Contains(valorFiltro, StringComparison.OrdinalIgnoreCase));
+                ListaTrabajos = await trabajosServices.Listar(t => t.Cliente != null && t.Cliente.Nombres.Contains(valorFiltro, StringComparison.OrdinalIgnoreCase));
             }
             else if (filtro == "nombreTecnico")
             {
-                ListaTrabajos = await trabajosServices.Listar(t => t.Tecnico.Nombres.Contains(valorFiltro, StringComparison.OrdinalIgnoreCase));
+                ListaTrabajos = await trabajosServices.Listar(t => t.Tecnico != null && t.Tecnico.Nombres.Contains(valorFiltro, StringComparison.OrdinalIgnoreCase));
             }
         }
         else
         {
-            ListaTrabajos = await trabajosServices.Listar(t => true);
+            await CargarTrabajos();
         }
     }
 
-    private async Task EnviarWhatsApp(Trabajos trabajo)
+    private void EnviarWhatsApp(Trabajos trabajo)
     {
-        var mensaje = $"El trabajo {trabajo.TrabajoId} ya está finalizado.";
-        var urlWhatsApp = $"https://api.whatsapp.com/send?phone={trabajo.Cliente?.WhatsApp}&text={mensaje}";
-
-        navigationManager.NavigateTo(urlWhatsApp, true);
-    }
-
-    private void IrADetalles(int trabajoId)
-    {
-        navigationManager.NavigateTo($"/Trabajos/Details/{trabajoId:int}");
-    }
-
-    private void IrAEditar(int trabajoId)
-    {
-        navigationManager.NavigateTo($"/Trabajo/Edit/{trabajoId:int}");
-    }
-
-    private void IrEliminar(int trabajoId)
-    {
-        navigationManager.NavigateTo($"/Trabajos/Delete/{trabajoId:int}");
+        if (trabajo.Cliente != null && !string.IsNullOrWhiteSpace(trabajo.Cliente.WhatsApp))
+        {
+            trabajosServices.EnviarMensajeWhatsApp(trabajo);
+        }
     }
 }
