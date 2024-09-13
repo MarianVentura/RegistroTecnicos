@@ -4,6 +4,8 @@ using RegistroTecnicos.DAL;
 using System.Linq.Expressions;
 using RegistroTecnicos.Models;
 using System.Net.Http;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components;
 
 namespace RegistroTecnicos.Services;
 
@@ -11,11 +13,13 @@ public class TrabajosServices
 {
     private readonly Contexto Contexto;
     private readonly HttpClient _httpClient;
+    private readonly NavigationManager _navigationManager;
 
-    public TrabajosServices(Contexto contexto, HttpClient httpClient)
+    public TrabajosServices(Contexto contexto, HttpClient httpClient, NavigationManager navigationManager)
     {
         Contexto = contexto;
         _httpClient = httpClient;
+        _navigationManager = navigationManager;
     }
 
     //Método Existe
@@ -80,24 +84,19 @@ public class TrabajosServices
             .ToListAsync();
     }
 
-    //Método Finalizar Trabajo
-    public async Task<bool> FinalizarTrabajo(int trabajoId, int tiempo)
+    //Método Enviar WhatsApp
+    public void EnviarMensajeWhatsApp(Trabajos trabajo)
     {
-        var trabajo = await Buscar(trabajoId);
-        if (trabajo != null)
-        {
-            trabajo.Tiempo = tiempo;
-            await Guardar(trabajo);
+        //Mensaje que se le enviara al cliente
+        string mensaje = $"Hola {trabajo.Cliente.Nombres}, el trabajo de '{trabajo.Descripcion}' ya esta finalizado.";
 
-            //Enviar mensaje de WhatsApp
-            var mensaje = $"El trabajo {trabajoId} ya está finalizado.";
-            var urlWhatsApp = $"https://api.whatsapp.com/send?phone={trabajo.Cliente.WhatsApp}&text={mensaje}";
+        //Enlace de WhatsApp con el número del cliente
+        string whatsappUrl = $"https://wa.me//{trabajo.Cliente.WhatsApp}?text={Uri.EscapeDataString(mensaje)}";
 
-            var response = await _httpClient.GetAsync(urlWhatsApp);
-                return response.IsSuccessStatusCode;
-        }
-        return false;
+        //Redirigir a la URL de WhatsApp para enviar el mensaje
+        _navigationManager.NavigateTo(whatsappUrl, true);
     }
+    
     
        
 }
