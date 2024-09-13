@@ -29,5 +29,5 @@ public class Trabajos
     [Required(ErrorMessage = "Este campo es obligatorio.")]
     public decimal Monto { get; set; }
 
-    public int Tiempo { get; set; } // Duración del trabajo
+    public TimeSpan Tiempo { get; set; } // Tiempo que le tomó al técnico completar el trabajo
 }
