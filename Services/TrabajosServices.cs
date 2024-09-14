@@ -12,14 +12,12 @@ namespace RegistroTecnicos.Services;
 public class TrabajosServices
 {
     private readonly Contexto Contexto;
-    private readonly HttpClient _httpClient;
-    private readonly NavigationManager _navigationManager;
+    
 
-    public TrabajosServices(Contexto contexto, HttpClient httpClient, NavigationManager navigationManager)
+    public TrabajosServices(Contexto contexto)
     {
         Contexto = contexto;
-        _httpClient = httpClient;
-        _navigationManager = navigationManager;
+        
     }
 
     //Método Existe
@@ -84,19 +82,29 @@ public class TrabajosServices
             .ToListAsync();
     }
 
-    //Método Enviar WhatsApp
-    public void EnviarMensajeWhatsApp(Trabajos trabajo)
-    {
-        //Mensaje que se le enviara al cliente
-        string mensaje = $"Hola {trabajo.Cliente.Nombres}, el trabajo de '{trabajo.Descripcion}' ya esta finalizado.";
+    //public async Task FinalizarTrabajo(int trabajoId)
+    //{
+    //    var trabajo = await Contexto.Trabajos.FindAsync(trabajoId);
+    //    if (trabajo != null)
+    //    {
+    //        trabajo.TrabajoFinalizado = true;
 
-        //Enlace de WhatsApp con el número del cliente
-        string whatsappUrl = $"https://wa.me//{trabajo.Cliente.WhatsApp}?text={Uri.EscapeDataString(mensaje)}";
+    //        EnviarMensajeWhatsApp(trabajo.Cliente.WhatsApp, trabajo.TrabajoId);
 
-        //Redirigir a la URL de WhatsApp para enviar el mensaje
-        _navigationManager.NavigateTo(whatsappUrl, true);
-    }
-    
-    
-       
+    //        await Contexto.SaveChangesAsync();
+    //    }
+    //}
+
+    //private void EnviarMensajeWhatsApp(string numero,  int trabajoId)
+    //{
+    //    var mensaje = $"¡Hola! Su trabajo con ID {trabajoId} ya está listo. Gracias por confiar en nosotros.";
+    //    var url = $"https://api.whatsapp.com/send?phone={numero}&text={Uri.EscapeDataString(mensaje)}";
+
+    //    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+    //    {
+    //        FileName = url,
+    //        UseShellExecute = true
+    //    }) ;
+    //}
+
 }
