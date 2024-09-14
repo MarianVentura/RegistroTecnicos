@@ -50,7 +50,9 @@
                 <tr>
                     <th>TrabajoId</th>
                     <th>Fecha</th>
+                    <th>ClienteId</th>
                     <th>Cliente</th>
+                    <th>TécnicoId</th>
                     <th>Técnico</th>
                     <th>Descripción</th>
                     <th>Monto</th>
@@ -65,7 +67,9 @@
                     <tr>
                         <td>@trabajo.TrabajoId</td>
                         <td>@trabajo.Fecha.ToString("dd/MM/yyyy")</td>
+                        <td>@trabajo.Cliente.ClienteId</td>
                         <td>@trabajo.Cliente.Nombres</td>
+                        <td>@trabajo.Tecnico.TecnicoId</td>
                         <td>@trabajo.Tecnico.Nombres</td>
                         <td>@trabajo.Descripcion</td>
                         <td>@trabajo.Monto.ToString("C")</td>
@@ -83,6 +87,7 @@
                             <a class="btn btn-outline-danger" href="/Trabajos/Delete/@trabajo.TrabajoId">
                                 <span class="bi bi-trash"></span>
                             </a>
+
                         </td>
                     </tr>
                 }
