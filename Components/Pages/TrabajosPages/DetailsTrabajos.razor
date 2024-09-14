@@ -33,6 +33,12 @@
                 <button class="btn btn-success" @onclick="EnviarWhatsApp">
                     <i class="bi bi-whatsapp"></i> Enviar WhatsApp
                 </button>
+
+                @*Mensaje de notificación*@
+                @if (!string.IsNullOrEmpty(notificacion))
+                {
+                    <div class="alert alert-info mt-3">@notificacion</div>
+                }
                 <button type="button" class="btn btn-primary" @onclick="Volver"><i class="bi bi-arrow-left-square-fill"></i> Volver</button>
             </div>
         </div>
@@ -47,6 +53,7 @@ else
     [Parameter]
     public int TrabajoId { get; set; }
     public Trabajos? trabajo { get; set; } = new Trabajos();
+    private string notificacion;
 
     protected override async Task OnInitializedAsync()
     {
@@ -64,10 +71,14 @@ else
         {
             var mensaje = $"Hola {trabajo.Cliente.Nombres}, su trabajo '{trabajo.Descripcion}' ha sido completado. El total es {trabajo.Monto:C}. ¡Gracias por su preferencia!";
 
+            var urlWhatsApp = $"https://wa.me/{trabajo.Cliente.WhatsApp.Replace(" ", "")}?text={Uri.EscapeDataString(mensaje)}";
 
-            var urlWhatsApp = $"https://wa.me/{trabajo.Cliente.WhatsApp}?text={Uri.EscapeDataString(mensaje)}";
-
-            navigationManager.NavigateTo(urlWhatsApp, true);
+            navigationManager.NavigateTo(urlWhatsApp, forceLoad: true);
+            notificacion = "Mensaje enviado correctamente.";
+        }
+        else
+        {
+            notificacion = "Error: No se pudo enviar el mensaje. El cliente no tiene un número de WhatsApp registrado.";
         }
     }
 }
