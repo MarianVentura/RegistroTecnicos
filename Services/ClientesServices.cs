@@ -29,9 +29,9 @@ public class ClientesServices
     }
 
     //Método Modificar
-    private async Task<bool> Modificar (Clientes cliente)
+    private async Task<bool> Modificar(Clientes cliente)
     {
-        Contexto.Clientes.Add (cliente);
+        Contexto.Clientes.Add(cliente);
         var modificado = await Contexto.SaveChangesAsync() > 0;
         Contexto.Entry(cliente).State = EntityState.Detached;
         return modificado;
@@ -40,7 +40,7 @@ public class ClientesServices
     //Método Guardar
     public async Task<bool> Guardar(Clientes cliente)
     {
-        if (!await Existe(cliente.ClienteId)) 
+        if (!await Existe(cliente.ClienteId))
             return await Insertar(cliente);
         else
         {
