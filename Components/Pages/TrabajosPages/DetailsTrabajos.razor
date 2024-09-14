@@ -30,6 +30,9 @@
                 </div>
             </div>
             <div class="card-footer">
+                <button class="btn btn-success" @onclick="EnviarWhatsApp">
+                    <i class="bi bi-whatsapp"></i> Enviar WhatsApp
+                </button>
                 <button type="button" class="btn btn-primary" @onclick="Volver"><i class="bi bi-arrow-left-square-fill"></i> Volver</button>
             </div>
         </div>
@@ -43,7 +46,7 @@ else
 @code {
     [Parameter]
     public int TrabajoId { get; set; }
-    public Trabajos? trabajo { get; set; }
+    public Trabajos? trabajo { get; set; } = new Trabajos();
 
     protected override async Task OnInitializedAsync()
     {
@@ -53,5 +56,18 @@ else
     public void Volver()
     {
         navigationManager.NavigateTo("/Trabajos/Index");
+    }
+
+    public void EnviarWhatsApp()
+    {
+        if (trabajo?.Cliente != null && !string.IsNullOrEmpty(trabajo.Cliente.WhatsApp))
+        {
+            var mensaje = $"Hola {trabajo.Cliente.Nombres}, su trabajo '{trabajo.Descripcion}' ha sido completado. El total es {trabajo.Monto:C}. ¡Gracias por su preferencia!";
+
+
+            var urlWhatsApp = $"https://wa.me/{trabajo.Cliente.WhatsApp}?text={Uri.EscapeDataString(mensaje)}";
+
+            navigationManager.NavigateTo(urlWhatsApp, true);
+        }
     }
 }
