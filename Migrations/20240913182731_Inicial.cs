@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace RegistroTecnicos.Migrations
 {
     /// <inheritdoc />
-    public partial class AddClientesAndTrabajos : Migration
+    public partial class Inicial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -26,6 +26,40 @@ namespace RegistroTecnicos.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "TiposTecnicos",
+                columns: table => new
+                {
+                    TipoTecnicoId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Descripcion = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TiposTecnicos", x => x.TipoTecnicoId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Tecnicos",
+                columns: table => new
+                {
+                    TecnicoId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Nombres = table.Column<string>(type: "TEXT", nullable: false),
+                    SueldoHora = table.Column<decimal>(type: "TEXT", nullable: false),
+                    TipoTecnicoId = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tecnicos", x => x.TecnicoId);
+                    table.ForeignKey(
+                        name: "FK_Tecnicos_TiposTecnicos_TipoTecnicoId",
+                        column: x => x.TipoTecnicoId,
+                        principalTable: "TiposTecnicos",
+                        principalColumn: "TipoTecnicoId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Trabajos",
                 columns: table => new
                 {
@@ -35,8 +69,7 @@ namespace RegistroTecnicos.Migrations
                     ClienteId = table.Column<int>(type: "INTEGER", nullable: false),
                     TecnicoId = table.Column<int>(type: "INTEGER", nullable: false),
                     Descripcion = table.Column<string>(type: "TEXT", nullable: false),
-                    Monto = table.Column<decimal>(type: "TEXT", nullable: false),
-                    Tiempo = table.Column<TimeSpan>(type: "TEXT", nullable: false)
+                    Monto = table.Column<decimal>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -54,6 +87,11 @@ namespace RegistroTecnicos.Migrations
                         principalColumn: "TecnicoId",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tecnicos_TipoTecnicoId",
+                table: "Tecnicos",
+                column: "TipoTecnicoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Trabajos_ClienteId",
@@ -74,6 +112,12 @@ namespace RegistroTecnicos.Migrations
 
             migrationBuilder.DropTable(
                 name: "Clientes");
+
+            migrationBuilder.DropTable(
+                name: "Tecnicos");
+
+            migrationBuilder.DropTable(
+                name: "TiposTecnicos");
         }
     }
 }

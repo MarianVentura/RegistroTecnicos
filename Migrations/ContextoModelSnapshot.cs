@@ -96,9 +96,6 @@ namespace RegistroTecnicos.Migrations
                     b.Property<int>("TecnicoId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<TimeSpan>("Tiempo")
-                        .HasColumnType("TEXT");
-
                     b.HasKey("TrabajoId");
 
                     b.HasIndex("ClienteId");

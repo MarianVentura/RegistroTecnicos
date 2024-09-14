@@ -11,8 +11,8 @@ using RegistroTecnicos.DAL;
 namespace RegistroTecnicos.Migrations
 {
     [DbContext(typeof(Contexto))]
-    [Migration("20240911193012_AddClientesAndTrabajos")]
-    partial class AddClientesAndTrabajos
+    [Migration("20240913182731_Inicial")]
+    partial class Inicial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -98,9 +98,6 @@ namespace RegistroTecnicos.Migrations
 
                     b.Property<int>("TecnicoId")
                         .HasColumnType("INTEGER");
-
-                    b.Property<TimeSpan>("Tiempo")
-                        .HasColumnType("TEXT");
 
                     b.HasKey("TrabajoId");
 
