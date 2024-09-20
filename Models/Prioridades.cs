@@ -1,8 +1,16 @@
-﻿namespace RegistroTecnicos.Models;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace RegistroTecnicos.Models;
 
 public class Prioridades
 {
-    public int PrioridadId { get; set; }
+    [Key]
+    public int PrioridadId {  get; set; }
+
+    [Required(ErrorMessage = "Campo Obligatorio")]
     public string? Descripcion { get; set; }
+
+    [Required(ErrorMessage = "Campo Obligatorio")]
     public TimeSpan Tiempo { get; set; }
+  
 }
