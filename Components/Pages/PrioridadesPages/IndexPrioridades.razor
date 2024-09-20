@@ -1,0 +1,140 @@
+﻿@page "/Prioridades/Index"
+@inject PrioridadesServices prioridadesServices
+@inject NavigationManager navigationManager
+@rendermode InteractiveServer
+
+<PageTitle>Prioridades</PageTitle>
+
+<div class="border shadow-lg p-3 rounded">
+    <div class="card-header bg-primary text-white text-center py- square">
+        <h3 style="font-weight: bold;" class="mb-0 font-weight-bold">Prioridades</h3>
+    </div>
+
+    <div class="row mb-3 align-items-end">
+        <div class="col-md-3">
+            <label for="Filtro" class="form-label"></label>
+            <select @bind="filtro" class="form-select">
+                <option value="" disabled selected>Filtrar por:</option>
+                <option value="id">ID</option>
+                <option value="descripcion">Descripción</option>
+                <option value="tiempo">Tiempo</option>
+            </select>
+        </div>
+        <div class="col-md-6">
+            <label for="ValorFiltro" class="form-label"></label>
+            <div class="input-group">
+                <input @bind="valorFiltro" class="form-control" placeholder="Buscar" />
+                <button @onclick="Buscar" class="btn btn-outline-secondary" type="button">
+                    <span class="bi bi-search"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-9"></div>
+            <div class="col-md-3 text-end">
+                <a href="/Prioridades/Create" class="btn btn-success" type="button">
+                    <i class="bi bi-pencil-square"></i>    
+                    Crear
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered text-center">
+            <thead class="bg-primary text-white">
+                <tr>
+                    <th>PrioridadesId</th>
+                    <th>Descripción</th>
+                    <th>Tiempo</th>
+                    <th>Ver</th>
+                    <th>Editar</th>
+                    <th>Eliminar</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var prioridad in ListaPrioridades)
+                {
+                    <tr>
+                        <td>@prioridad.PrioridadId</td>
+                        <td>@prioridad.Descripcion</td>
+                        <td>@prioridad.Tiempo</td>
+                        <td>
+                            <a class="btn btn-outline-primary" href="/Prioridades/Details/@prioridad.PrioridadId">
+                                <span class="bi bi-eye-fill"></span>
+                            </a>
+                        </td>
+                        <td>
+                            <a class="btn btn-outline-sucess" href="/Prioridades/Edit/@prioridad.PrioridadId">
+                                <span class="bi bi-pencil-square"></span>
+                            </a>
+                        </td>
+                        <td>
+                            <a class="btn btn-outline-danger" href="?Prioridades/Delete/@prioridad.PrioridadId">
+                                <span class="bi bi-trash"></span>    
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="card-footer text-start">
+        <p style="font-weight: bold;">Total de Prioridades: @ListaPrioridades.Count</p>
+    </div>
+</div>
+
+@code {
+    public List<Prioridades> ListaPrioridades { get; set; } = new List<Prioridades>();
+    private string filtro = "id";
+    private string? valorFiltro;
+
+    protected override async Task OnInitializedAsync()
+    {
+        ListaPrioridades = await prioridadesServices.Listar(p => p.PrioridadId > 0);
+    }
+
+    private async Task Buscar()
+    {
+        if (!string.IsNullOrWhiteSpace(valorFiltro))
+        {
+            if (filtro == "id" && int.TryParse(valorFiltro, out int PrioridadId))
+            {
+                ListaPrioridades = await prioridadesServices.Listar(p => p.PrioridadId == PrioridadId);
+            }
+            else if (filtro == "descripcion")
+            {
+                ListaPrioridades = await prioridadesServices.Listar(p => p.Descripcion.Contains(valorFiltro, StringComparison.OrdinalIgnoreCase));
+            }
+            else if (filtro == "tiempo")
+            {
+                if (int.TryParse(valorFiltro, out int tiempo))
+                {
+                    ListaPrioridades = await prioridadesServices.Listar(p => p.Tiempo == tiempo);
+                }
+            }
+        }
+        else
+        {
+            ListaPrioridades = await prioridadesServices.Listar(p => true);
+        }
+    }
+
+    private void IrADetalles(int PrioridadId)
+    {
+        navigationManager.NavigateTo($"/Prioridades/Details/{PrioridadId:int}");
+    }
+
+    private void IrAEditar(int PrioridadId)
+    {
+        navigationManager.NavigateTo($"/Propiedades/Edit/{PrioridadId:int}");
+    }
+
+    private void IrEliminar(int PrioridadId)
+    {
+        navigationManager.NavigateTo($"/Prioridades/Details/{PrioridadId:int}");
+    }
+}
