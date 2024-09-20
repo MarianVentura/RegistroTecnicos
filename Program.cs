@@ -4,6 +4,7 @@ using RegistroTecnicos.DAL;
 using RegistroTecnicos.Models;
 using RegistroTecnicos.Services;
 
+
 namespace RegistroTecnicos;
 
 public class Program
@@ -26,7 +27,7 @@ public class Program
         builder.Services.AddScoped<TiposTecnicosServices>();
         builder.Services.AddScoped<ClientesServices>();
         builder.Services.AddScoped<TrabajosServices>();
-        builder.Services.AddScoped<Prioridades>();
+        builder.Services.AddScoped<PrioridadesServices>();
         
 
         builder.Services.AddBlazorBootstrap();
