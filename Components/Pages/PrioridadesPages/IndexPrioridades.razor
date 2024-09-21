@@ -6,8 +6,8 @@
 <PageTitle>Prioridades</PageTitle>
 
 <div class="border shadow-lg p-3 rounded">
-    <div class="card-header bg-primary text-white text-center py- square">
-        <h3 style="font-weight: bold;" class="mb-0 font-weight-bold">Prioridades</h3>
+    <div class="card-header bg-primary text-white text-center py-2 rounded">
+        <h3 style="font-weight: bold;" class="mb-0">Prioridades</h3>
     </div>
 
     <div class="row mb-3 align-items-end">
@@ -17,7 +17,7 @@
                 <option value="" disabled selected>Filtrar por:</option>
                 <option value="id">ID</option>
                 <option value="descripcion">Descripción</option>
-                <option value="tiempo">Tiempo</option>
+                <option value="tiempo">Tiempo (minutos)</option>
             </select>
         </div>
         <div class="col-md-6">
@@ -36,7 +36,7 @@
             <div class="col-md-9"></div>
             <div class="col-md-3 text-end">
                 <a href="/Prioridades/Create" class="btn btn-success" type="button">
-                    <i class="bi bi-pencil-square"></i>    
+                    <i class="bi bi-pencil-square"></i>
                     Crear
                 </a>
             </div>
@@ -47,9 +47,9 @@
         <table class="table table-bordered text-center">
             <thead class="bg-primary text-white">
                 <tr>
-                    <th>PrioridadesId</th>
+                    <th>PrioridadId</th>
                     <th>Descripción</th>
-                    <th>Tiempo</th>
+                    <th>Tiempo (minutos)</th>
                     <th>Ver</th>
                     <th>Editar</th>
                     <th>Eliminar</th>
@@ -68,13 +68,13 @@
                             </a>
                         </td>
                         <td>
-                            <a class="btn btn-outline-sucess" href="/Prioridades/Edit/@prioridad.PrioridadId">
+                            <a class="btn btn-outline-success" href="/Prioridades/Edit/@prioridad.PrioridadId">
                                 <span class="bi bi-pencil-square"></span>
                             </a>
                         </td>
                         <td>
-                            <a class="btn btn-outline-danger" href="?Prioridades/Delete/@prioridad.PrioridadId">
-                                <span class="bi bi-trash"></span>    
+                            <a class="btn btn-outline-danger" href="/Prioridades/Delete/@prioridad.PrioridadId">
+                                <span class="bi bi-trash"></span>
                             </a>
                         </td>
                     </tr>
@@ -113,7 +113,7 @@
             {
                 if (int.TryParse(valorFiltro, out int tiempo))
                 {
-                    ListaPrioridades = await prioridadesServices.Listar(p => p.Tiempo.TotalMinutes == tiempo);
+                    ListaPrioridades = await prioridadesServices.Listar(p => p.Tiempo == tiempo);
                 }
             }
         }
@@ -121,20 +121,5 @@
         {
             ListaPrioridades = await prioridadesServices.Listar(p => true);
         }
-    }
-
-    private void IrADetalles(int PrioridadId)
-    {
-        navigationManager.NavigateTo($"/Prioridades/Details/{PrioridadId:int}");
-    }
-
-    private void IrAEditar(int PrioridadId)
-    {
-        navigationManager.NavigateTo($"/Propiedades/Edit/{PrioridadId:int}");
-    }
-
-    private void IrEliminar(int PrioridadId)
-    {
-        navigationManager.NavigateTo($"/Prioridades/Details/{PrioridadId:int}");
     }
 }
