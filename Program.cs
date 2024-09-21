@@ -28,6 +28,7 @@ public class Program
         builder.Services.AddScoped<ClientesServices>();
         builder.Services.AddScoped<TrabajosServices>();
         builder.Services.AddScoped<PrioridadesServices>();
+     
         
 
         builder.Services.AddBlazorBootstrap();
