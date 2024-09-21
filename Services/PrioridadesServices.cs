@@ -37,7 +37,7 @@ public class PrioridadesServices
     {
         if (!await Existe(prioridad.PrioridadId))
             return await Insertar(prioridad);
-        else 
+        else
             return await Modificar(prioridad);
     }
 
