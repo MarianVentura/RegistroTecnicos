@@ -46,8 +46,8 @@ namespace RegistroTecnicos.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Tiempo")
-                        .HasColumnType("INTEGER");
+                    b.Property<TimeSpan>("Tiempo")
+                        .HasColumnType("TEXT");
 
                     b.HasKey("PrioridadId");
 
@@ -111,12 +111,17 @@ namespace RegistroTecnicos.Migrations
                     b.Property<decimal>("Monto")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("PrioridadId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("TecnicoId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("TrabajoId");
 
                     b.HasIndex("ClienteId");
+
+                    b.HasIndex("PrioridadId");
 
                     b.HasIndex("TecnicoId");
 
@@ -142,6 +147,12 @@ namespace RegistroTecnicos.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("RegistroTecnicos.Models.Prioridades", "Prioridades")
+                        .WithMany("Trabajos")
+                        .HasForeignKey("PrioridadId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("RegistroTecnicos.Models.Tecnicos", "Tecnico")
                         .WithMany()
                         .HasForeignKey("TecnicoId")
@@ -150,7 +161,14 @@ namespace RegistroTecnicos.Migrations
 
                     b.Navigation("Cliente");
 
+                    b.Navigation("Prioridades");
+
                     b.Navigation("Tecnico");
+                });
+
+            modelBuilder.Entity("RegistroTecnicos.Models.Prioridades", b =>
+                {
+                    b.Navigation("Trabajos");
                 });
 #pragma warning restore 612, 618
         }
