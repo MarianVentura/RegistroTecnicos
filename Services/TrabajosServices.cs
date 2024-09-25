@@ -11,38 +11,33 @@ namespace RegistroTecnicos.Services;
 
 public class TrabajosServices
 {
-    private readonly Contexto Contexto;
+    private readonly Contexto _contexto;
     
 
     public TrabajosServices(Contexto contexto)
     {
-        Contexto = contexto;
+        _contexto = contexto;
         
     }
 
-    //Método Existe
     public async Task<bool> Existe(int TrabajoId)
     {
-        return await Contexto.Trabajos.AnyAsync(t => t.TrabajoId == TrabajoId);
+        return await _contexto.Trabajos.AnyAsync(t => t.TrabajoId == TrabajoId);
     }
 
-    //Método Insertar
+    
     private async Task<bool> Insertar(Trabajos trabajo)
     {
-        Contexto.Trabajos.Add(trabajo);
-        return await Contexto.SaveChangesAsync() > 0;
+        _contexto.Trabajos.Add(trabajo);
+        return await _contexto.SaveChangesAsync() > 0;
     }
 
-    //Método Modificar
     private async Task<bool> Modificar(Trabajos trabajo)
     {
-        Contexto.Trabajos.Update(trabajo);
-        var modificado = await Contexto.SaveChangesAsync() > 0;
-        Contexto.Entry(trabajo).State = EntityState.Detached;
-        return modificado;
+        _contexto.Trabajos.Update(trabajo);
+        return await _contexto.SaveChangesAsync() > 0;
     }
 
-    //Método Guardar
     public async Task<bool> Guardar(Trabajos trabajo)
     {
         if (!await Existe(trabajo.TrabajoId))
@@ -53,58 +48,53 @@ public class TrabajosServices
         }
     }
 
-    //Método Eliminar
     public async Task<bool> Eliminar(int id)
     {
-        var trabajosEliminados = await Contexto.Trabajos
+        var trabajosEliminados = await _contexto.Trabajos
             .Where(t => t.TrabajoId == id)
             .ExecuteDeleteAsync();
         return trabajosEliminados > 0;
     }
 
-    //Método Buscar
+ 
     public async Task<Trabajos?> Buscar(int id)
     {
-        return await Contexto.Trabajos
+        return await _contexto.Trabajos
+            .AsNoTracking()
             .Include(t => t.Cliente)
             .Include(t => t.Tecnico)
+            .Include(t => t.Prioridades)
             .AsNoTracking()
             .FirstOrDefaultAsync(t => t.TrabajoId == id);
     }
 
-    //Método Listar
     public async Task<List<Trabajos>> Listar(Expression<Func<Trabajos, bool>> criterio)
     {
-        return await Contexto.Trabajos
+        return await _contexto.Trabajos
+            .AsNoTracking()
             .Include(t => t.Cliente)
             .Include(t => t.Tecnico)
+            .Include(t => t.Prioridades)
             .Where(criterio)
+            .OrderBy(t => t.Prioridades.PrioridadId)
             .ToListAsync();
     }
 
-    //public async Task FinalizarTrabajo(int trabajoId)
-    //{
-    //    var trabajo = await Contexto.Trabajos.FindAsync(trabajoId);
-    //    if (trabajo != null)
-    //    {
-    //        trabajo.TrabajoFinalizado = true;
+    public async Task<List<Clientes>> ObtnerClientes()
+    {
+        return await _contexto.Clientes.ToListAsync();
+    }
 
-    //        EnviarMensajeWhatsApp(trabajo.Cliente.WhatsApp, trabajo.TrabajoId);
+    public async Task<List<Tecnicos>> ObtenerTecnicos()
+    {
+        return await _contexto.Tecnicos.ToListAsync();
+    }
 
-    //        await Contexto.SaveChangesAsync();
-    //    }
-    //}
+    public async Task<List<Prioridades>> ObtenerPrioridades()
+    {
+        return await _contexto.Prioridades.ToListAsync();
+    }
 
-    //private void EnviarMensajeWhatsApp(string numero,  int trabajoId)
-    //{
-    //    var mensaje = $"¡Hola! Su trabajo con ID {trabajoId} ya está listo. Gracias por confiar en nosotros.";
-    //    var url = $"https://api.whatsapp.com/send?phone={numero}&text={Uri.EscapeDataString(mensaje)}";
-
-    //    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
-    //    {
-    //        FileName = url,
-    //        UseShellExecute = true
-    //    }) ;
-    //}
+    
 
 }
