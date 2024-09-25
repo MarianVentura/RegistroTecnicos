@@ -124,7 +124,7 @@
 
     public async Task Eliminar()
     {
-        var eliminado = await tecnicoServices.Eliminar(tecnico.TecnicoId);
+        var eliminado = await tecnicoServices.Eliminar(tecnico);
         await Nuevo();
     }
 
