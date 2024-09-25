@@ -8,75 +8,76 @@ namespace RegistroTecnicos.Services;
 
 public class ClientesServices
 {
-    private readonly Contexto Contexto;
+    private readonly Contexto _contexto;
 
     public ClientesServices(Contexto contexto)
     {
-        Contexto = contexto;
+        _contexto = contexto;
     }
 
-    //Método Existe
+   
     public async Task<bool> Existe(int ClienteId)
     {
-        return await Contexto.Clientes.AnyAsync(c => c.ClienteId == ClienteId);
+        return await _contexto.Clientes.AnyAsync(c => c.ClienteId == ClienteId);
     }
 
-    //Método Insertar
+    
     private async Task<bool> Insertar(Clientes cliente)
     {
-        Contexto.Clientes.Add(cliente);
-        return await Contexto.SaveChangesAsync() > 0;
+        _contexto.Clientes.Add(cliente);
+        return await _contexto.SaveChangesAsync() > 0;
     }
 
-    //Método Modificar
     private async Task<bool> Modificar(Clientes cliente)
     {
-        Contexto.Clientes.Add(cliente);
-        var modificado = await Contexto.SaveChangesAsync() > 0;
-        Contexto.Entry(cliente).State = EntityState.Detached;
-        return modificado;
+        _contexto.Update(cliente);
+        return await _contexto.SaveChangesAsync() > 0;
+        
     }
 
-    //Método Guardar
+    
     public async Task<bool> Guardar(Clientes cliente)
     {
         if (!await Existe(cliente.ClienteId))
+        {
             return await Insertar(cliente);
+        }
         else
         {
             return await Modificar(cliente);
         }
     }
 
-    //Método Eliminar
+    
     public async Task<bool> Eliminar(int id)
     {
-        var clientesEliminados = await Contexto.Clientes
+        var clientesEliminados = await _contexto.Clientes
             .Where(c => c.ClienteId == id)
             .ExecuteDeleteAsync();
         return clientesEliminados > 0;
     }
 
-    //Método Buscar
-    public async Task<Clientes?> Buscar(int id)
+   
+    public async Task<Clientes?> Buscar(int clienteId)
     {
-        return await Contexto.Clientes
+        return await _contexto.Clientes
             .AsNoTracking()
-            .FirstOrDefaultAsync();
+            .FirstOrDefaultAsync(c => c.ClienteId == clienteId);
     }
 
-    //Método Listar
+    
     public async Task<List<Clientes>> Listar(Expression<Func<Clientes, bool>> criterio)
     {
-        return await Contexto.Clientes
+        return await _contexto.Clientes
+            .AsNoTracking()
             .Where(criterio)
             .ToListAsync();
     }
 
-    //Método Existe Cliente
-    public async Task<bool> ExisteCliente(int clienteId, string nombres)
+
+    public async Task<bool> ExisteCliente(int clienteId, string nombres, string whatsApp)
     {
-        return await Contexto.Clientes
+        return await _contexto.Clientes
             .AnyAsync(e => e.ClienteId != clienteId && e.Nombres.ToLower().Equals(nombres.ToLower()));
 
     }
