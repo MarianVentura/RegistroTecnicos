@@ -15,13 +15,13 @@ public class TiposTecnicosServices
         _contexto = contexto;
     }
 
-    public async Task<bool> ExisteTipoId(int tiposTecnicosId)
+    public async Task<bool> Existe(int tiposTecnicosId)
     {
         return await _contexto.TiposTecnicos.AnyAsync(t => t.TipoTecnicoId == tiposTecnicosId);
 
     }
 
-    public async Task<bool> ExisteTipoDescripcion(string? descripcion)
+    public async Task<bool> ExisteDescripcion(string? descripcion)
     {
         return await _contexto.TiposTecnicos.AnyAsync(t => t.Descripcion == descripcion);
     }
@@ -34,23 +34,28 @@ public class TiposTecnicosServices
 
     private async Task<bool> Modificar(TiposTecnicos tiposTecnicos)
     {
-        _contexto.TiposTecnicos.Update(tiposTecnicos);
-        var modificado = await _contexto.SaveChangesAsync() > 0;
-        return modificado;
+        _contexto.Update(tiposTecnicos);
+        return await _contexto.SaveChangesAsync() > 0;
     }
 
     public async Task<bool> Guardar(TiposTecnicos tiposTecnicos)
     {
-        if (!await ExisteTipoId(tiposTecnicos.TipoTecnicoId))
+        if (!await Existe(tiposTecnicos.TipoTecnicoId))
+        {
             return await Insertar(tiposTecnicos);
+        }
         else
+        {
             return await Modificar(tiposTecnicos);
+        }
+            
     }
 
     public async Task<bool> Eliminar(int id)
     {
         return await _contexto.TiposTecnicos
-            .Where(tipos => tipos.TipoTecnicoId == id).ExecuteDeleteAsync() > 0;
+            .Where(tipos => tipos.TipoTecnicoId == id)
+            .ExecuteDeleteAsync() > 0;
     }
 
     public async Task<TiposTecnicos?> Buscar(int id)
