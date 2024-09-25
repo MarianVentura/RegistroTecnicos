@@ -113,7 +113,7 @@
             {
                 if (int.TryParse(valorFiltro, out int tiempo))
                 {
-                    ListaPrioridades = await prioridadesServices.Listar(p => p.Tiempo == tiempo);
+                    ListaPrioridades = await prioridadesServices.Listar(p => p.Tiempo.TotalMinutes == tiempo);
                 }
             }
         }
