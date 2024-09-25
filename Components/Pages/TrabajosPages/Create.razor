@@ -2,6 +2,7 @@
 @inject TrabajosServices trabajosServices
 @inject ClientesServices clientesServices
 @inject TecnicoServices tecnicoServices
+@inject PrioridadesServices prioridadesServices
 @inject NavigationManager navigationManager
 @rendermode InteractiveServer
 
@@ -57,6 +58,19 @@
                 <ValidationMessage For="@(() => trabajo.Descripcion)" />
             </div>
 
+            @*Prioridad*@
+            <div class="mb-3">
+                <label for="PrioridadId" class="form-label">Prioridad</label>
+                <InputSelect @bind-Value="trabajo.PrioridadId" class="form-select">
+                    <option value="">Seleccione una prioridad</option>
+                    @foreach (var item in listaPrioridades)
+                    {
+                        <option value="@item.PrioridadId">@item.Descripcion</option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => trabajo.PrioridadId)" />
+            </div>
+
             @* Monto *@
             <div class="mb-3">
                 <label for="Monto" class="form-label">Monto</label>
@@ -76,11 +90,13 @@
     public Trabajos trabajo { get; set; } = new Trabajos();
     public List<Clientes> listaClientes { get; set; } = new List<Clientes>();
     public List<Tecnicos> listaTecnicos { get; set; } = new List<Tecnicos>();
+    public List<Prioridades> listaPrioridades { get; set; } = new List<Prioridades>(); 
 
     protected override async Task OnInitializedAsync()
     {
         listaClientes = await clientesServices.Listar(c => c.ClienteId > 0);
         listaTecnicos = await tecnicoServices.Listar(t => t.TecnicoId > 0);
+        listaPrioridades = await prioridadesServices.Listar(p => p.PrioridadId > 0); 
     }
 
     private async Task Guardar()
