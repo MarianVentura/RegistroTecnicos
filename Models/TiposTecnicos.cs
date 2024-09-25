@@ -8,8 +8,8 @@ namespace RegistroTecnicos.Models
 
         public int TipoTecnicoId { get; set; }
         [Required(ErrorMessage = "Campo Obligatorio")]
-        [RegularExpression(@"[a-zA-Z\s]+$", ErrorMessage = "No se permiten caracteres ni números, solo letras.")]
         public string? Descripcion { get; set; }
+       
 
     }
 }

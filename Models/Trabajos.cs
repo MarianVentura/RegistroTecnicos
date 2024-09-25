@@ -29,5 +29,9 @@ public class Trabajos
     [Required(ErrorMessage = "Este campo es obligatorio.")]
     public decimal Monto { get; set; }
 
+    [ForeignKey("Prioridades")]
+    public int PrioridadId {  get; set; }
+    public Prioridades? Prioridades { get; set; }
+
 
 }

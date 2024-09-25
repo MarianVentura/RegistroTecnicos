@@ -12,4 +12,6 @@ public class Prioridades
 
     [Required(ErrorMessage = "Campo Obligatorio")]
     public TimeSpan Tiempo { get; set; }
+
+    public ICollection<Trabajos> Trabajos { get; set; } = new List<Trabajos>();
 }

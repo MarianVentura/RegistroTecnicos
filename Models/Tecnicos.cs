@@ -11,7 +11,10 @@ public class Tecnicos
     [Required(ErrorMessage = "El campo no esta lleno")]
     public string? Nombres { get; set; }
 
+    [Range(0.01, double.MaxValue, ErrorMessage = "Sueldo por Hora debe ser mayor que cero.")]
     public decimal SueldoHora { get; set; }
+
+
 
     [ForeignKey("TipoTecnico")]
     public int TipoTecnicoId { get; set; }
