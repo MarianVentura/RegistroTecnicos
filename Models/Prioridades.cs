@@ -11,5 +11,5 @@ public class Prioridades
     public string? Descripcion { get; set; }
 
     [Required(ErrorMessage = "Campo Obligatorio")]
-    public int Tiempo { get; set; }
+    public TimeSpan Tiempo { get; set; }
 }
