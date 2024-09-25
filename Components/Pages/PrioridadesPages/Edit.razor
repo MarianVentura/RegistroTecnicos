@@ -32,11 +32,11 @@
                 <ValidationMessage For="@(() => prioridad.Descripcion)" />
             </div>
 
-            @* Tiempo (en minutos) *@
+            @* Tiempo de Prioridad en minutos *@
             <div class="mb-3">
-                <label for="Tiempo" class="form-label">Tiempo (minutos):</label>
-                <InputNumber @bind-Value="prioridad.Tiempo" class="form-control" />
-                <ValidationMessage For="@(() => prioridad.Tiempo)" />
+                <label for="Tiempo" class="form-label">Tiempo en minutos</label>
+                <InputNumber @bind-Value="tiempoEnMinutos" class="form-control" />
+                <ValidationMessage For="@(() => tiempoEnMinutos)" />
             </div>
         </div>
 
@@ -54,6 +54,8 @@
     [Parameter]
     public int PrioridadId { get; set; }
     public Prioridades prioridad { get; set; } = new Prioridades();
+    private int tiempoEnMinutos;
+
 
     protected override async Task OnInitializedAsync()
     {

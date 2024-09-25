@@ -17,6 +17,7 @@
                 <label for="PrioridadId" class="form-label">ID de la Prioridad</label>
                 <InputNumber @bind-Value="prioridad.PrioridadId" class="form-control" disabled="true" />
             </div>
+
             @* Descripción de la Prioridad *@
             <div class="mb-3">
                 <label for="Descripcion" class="form-label">Descripción</label>
@@ -27,8 +28,8 @@
             @* Tiempo de Prioridad en minutos *@
             <div class="mb-3">
                 <label for="Tiempo" class="form-label">Tiempo en minutos</label>
-                <InputNumber @bind-Value="prioridad.Tiempo" class="form-control" />
-                <ValidationMessage For="@(() => prioridad.Tiempo)" />
+                <InputNumber @bind-Value="tiempoEnMinutos" class="form-control" />
+                <ValidationMessage For="@(() => tiempoEnMinutos)" />
             </div>
 
             <div class="card-footer bg-light d-flex justify-content-around mt-3">
@@ -45,9 +46,11 @@
 
 @code {
     public Prioridades prioridad { get; set; } = new Prioridades();
+    private int tiempoEnMinutos
 
     private async Task Guardar()
     {
+        prioridad.Tiempo = TimeSpan.FromMinutes(tiempoEnMinutos);
         var guardo = await prioridadesServices.Guardar(prioridad);
         if (guardo)
         {
