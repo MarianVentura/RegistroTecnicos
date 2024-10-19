@@ -18,13 +18,14 @@ namespace RegistroTecnicos.Services
             _articulosServices = articulosServices;
         }
 
-        public async Task<bool> Existe(int DetalleId)
+        public async Task<bool> Existe(int detalleId)
         {
-            return await _contexto.TrabajosDetalles.AnyAsync(td => td.DetalleId == DetalleId);
+            return await _contexto.TrabajosDetalles.AnyAsync(td => td.DetalleId == detalleId);
         }
 
         private async Task<bool> Insertar(TrabajosDetalle trabajosDetalle)
         {
+            // Actualizar la existencia del artículo al agregar el detalle
             var exito = await _articulosServices.ActualizarExistencia(trabajosDetalle.ArticuloId, -trabajosDetalle.Cantidad);
             if (!exito) return false;
 
@@ -37,7 +38,7 @@ namespace RegistroTecnicos.Services
             var detalleExistente = await _contexto.TrabajosDetalles.AsNoTracking().FirstOrDefaultAsync(td => td.DetalleId == trabajosDetalle.DetalleId);
             if (detalleExistente == null) return false;
 
-            // Actualizar la existencia según la diferencia en cantidad
+            // Calcular la diferencia en cantidad y actualizar la existencia
             int diferenciaCantidad = trabajosDetalle.Cantidad - detalleExistente.Cantidad;
             var exito = await _articulosServices.ActualizarExistencia(trabajosDetalle.ArticuloId, -diferenciaCantidad);
             if (!exito) return false;
@@ -54,27 +55,27 @@ namespace RegistroTecnicos.Services
                 return await Modificar(trabajosDetalle);
         }
 
-        public async Task<bool> Eliminar(int DetalleId)
+        public async Task<bool> Eliminar(int detalleId)
         {
-            var detalle = await Buscar(DetalleId);
+            var detalle = await Buscar(detalleId);
             if (detalle == null) return false;
 
-            // Revertir la existencia de los artículos
+            // Revertir la existencia del artículo al eliminar el detalle
             var exito = await _articulosServices.ActualizarExistencia(detalle.ArticuloId, detalle.Cantidad);
             if (!exito) return false;
 
             var detalleEliminado = await _contexto.TrabajosDetalles
-                .Where(td => td.DetalleId == DetalleId)
+                .Where(td => td.DetalleId == detalleId)
                 .ExecuteDeleteAsync();
             return detalleEliminado > 0;
         }
 
-        public async Task<TrabajosDetalle?> Buscar(int DetalleId)
+        public async Task<TrabajosDetalle?> Buscar(int detalleId)
         {
             return await _contexto.TrabajosDetalles
                 .AsNoTracking()
                 .Include(td => td.Articulos)
-                .FirstOrDefaultAsync(td => td.DetalleId == DetalleId);
+                .FirstOrDefaultAsync(td => td.DetalleId == detalleId);
         }
 
         public async Task<List<TrabajosDetalle>> Listar(Expression<Func<TrabajosDetalle, bool>> criterio)
