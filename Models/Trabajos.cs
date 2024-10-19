@@ -33,5 +33,5 @@ public class Trabajos
     public int PrioridadId {  get; set; }
     public Prioridades? Prioridades { get; set; }
 
-
+    public ICollection<TrabajosDetalle>? TrabajoDetalles { get; set; } = new List <TrabajosDetalle>();
 }
