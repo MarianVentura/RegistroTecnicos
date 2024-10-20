@@ -6,26 +6,28 @@ namespace RegistroTecnicos.Models;
 public class TrabajosDetalle
 {
     [Key]
-    public int DetalleId { get; set; }
 
-    [Required(ErrorMessage = "Campo Obligatorio.")]
-    public int TrabajoId { get; set; }
 
-    [ForeignKey("TrabajoId")]
-    public Trabajos? Trabajo { get; set; }
+    public int? DetalleId { get; set; }
 
-    [Required(ErrorMessage = "Campo Obligatorio.")]
-    public int ArticuloId { get; set; }
+    [ForeignKey("TrabajosId")]
+    public Trabajos? Trabajos { get; set; }
+    public int? TrabajosId { get; set; }
+
 
     [ForeignKey("ArticuloId")]
     public Articulos? Articulos { get; set; }
+    public int? ArticuloId { get; set; }
 
-    [Required(ErrorMessage = "Campo Obligatorio.")]
-    public int Cantidad {  get; set; }
 
-    [Required(ErrorMessage = "Campo Obligatorio.")]
-    public decimal Precio { get; set; }
+    [Required(ErrorMessage = "Este Campo debe de ser obligatorio")]
+    public int Cantidad { get; set; }
 
-    [Required(ErrorMessage = "Campo Obligatorio.")]
-    public decimal Costo { get; set; }
+    [Required(ErrorMessage = "Este Campo debe de ser obligatorio")]
+    public decimal? Precio { get; set; }
+
+    [Required(ErrorMessage = "Este Campo debe de ser obligatorio")]
+    public decimal? Costo { get; set; }
+
+
 }
