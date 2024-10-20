@@ -22,7 +22,7 @@ namespace RegistroTecnicos.Migrations
                     Descripcion = table.Column<string>(type: "TEXT", nullable: false),
                     Costo = table.Column<decimal>(type: "TEXT", nullable: false),
                     Precio = table.Column<decimal>(type: "TEXT", nullable: false),
-                    Existencia = table.Column<int>(type: "INTEGER", nullable: false)
+                    Existencia = table.Column<decimal>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -128,32 +128,30 @@ namespace RegistroTecnicos.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TrabajosDetalles",
+                name: "TrabajosDetalle",
                 columns: table => new
                 {
                     DetalleId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    TrabajoId = table.Column<int>(type: "INTEGER", nullable: false),
-                    ArticuloId = table.Column<int>(type: "INTEGER", nullable: false),
+                    TrabajosId = table.Column<int>(type: "INTEGER", nullable: true),
+                    ArticuloId = table.Column<int>(type: "INTEGER", nullable: true),
                     Cantidad = table.Column<int>(type: "INTEGER", nullable: false),
                     Precio = table.Column<decimal>(type: "TEXT", nullable: false),
                     Costo = table.Column<decimal>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TrabajosDetalles", x => x.DetalleId);
+                    table.PrimaryKey("PK_TrabajosDetalle", x => x.DetalleId);
                     table.ForeignKey(
-                        name: "FK_TrabajosDetalles_Articulos_ArticuloId",
+                        name: "FK_TrabajosDetalle_Articulos_ArticuloId",
                         column: x => x.ArticuloId,
                         principalTable: "Articulos",
-                        principalColumn: "ArticuloId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "ArticuloId");
                     table.ForeignKey(
-                        name: "FK_TrabajosDetalles_Trabajos_TrabajoId",
-                        column: x => x.TrabajoId,
+                        name: "FK_TrabajosDetalle_Trabajos_TrabajosId",
+                        column: x => x.TrabajosId,
                         principalTable: "Trabajos",
-                        principalColumn: "TrabajoId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "TrabajoId");
                 });
 
             migrationBuilder.InsertData(
@@ -161,16 +159,16 @@ namespace RegistroTecnicos.Migrations
                 columns: new[] { "ArticuloId", "Costo", "Descripcion", "Existencia", "Precio" },
                 values: new object[,]
                 {
-                    { 1, 50m, "Kit de Herramientas Básico", 20, 100m },
-                    { 2, 30m, "Multímetro Digital", 15, 70m },
-                    { 3, 20m, "Sensor de Movimiento", 25, 45m },
-                    { 4, 150m, "Cámara de Seguridad", 10, 300m },
-                    { 5, 5m, "Cableado Eléctrico", 100, 15m },
-                    { 6, 80m, "Batería de Respaldo", 8, 180m },
-                    { 7, 60m, "Fuente de Alimentación", 12, 120m },
-                    { 8, 250m, "Panel Solar", 5, 500m },
-                    { 9, 90m, "Disco Duro SSD 1TB", 10, 200m },
-                    { 10, 40m, "Router Wi-Fi", 15, 100m }
+                    { 1, 50m, "Kit de Herramientas Básico", 20m, 100m },
+                    { 2, 30m, "Multímetro Digital", 15m, 70m },
+                    { 3, 20m, "Sensor de Movimiento", 25m, 45m },
+                    { 4, 150m, "Cámara de Seguridad", 10m, 300m },
+                    { 5, 5m, "Cableado Eléctrico", 100m, 15m },
+                    { 6, 80m, "Batería de Respaldo", 8m, 180m },
+                    { 7, 60m, "Fuente de Alimentación", 12m, 120m },
+                    { 8, 250m, "Panel Solar", 5m, 500m },
+                    { 9, 90m, "Disco Duro SSD 1TB", 10m, 200m },
+                    { 10, 40m, "Router Wi-Fi", 15m, 100m }
                 });
 
             migrationBuilder.CreateIndex(
@@ -194,21 +192,21 @@ namespace RegistroTecnicos.Migrations
                 column: "TecnicoId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TrabajosDetalles_ArticuloId",
-                table: "TrabajosDetalles",
+                name: "IX_TrabajosDetalle_ArticuloId",
+                table: "TrabajosDetalle",
                 column: "ArticuloId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TrabajosDetalles_TrabajoId",
-                table: "TrabajosDetalles",
-                column: "TrabajoId");
+                name: "IX_TrabajosDetalle_TrabajosId",
+                table: "TrabajosDetalle",
+                column: "TrabajosId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "TrabajosDetalles");
+                name: "TrabajosDetalle");
 
             migrationBuilder.DropTable(
                 name: "Articulos");

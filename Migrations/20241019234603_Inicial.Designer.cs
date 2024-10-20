@@ -11,7 +11,7 @@ using RegistroTecnicos.DAL;
 namespace RegistroTecnicos.Migrations
 {
     [DbContext(typeof(Contexto))]
-    [Migration("20241019171444_Inicial")]
+    [Migration("20241019234603_Inicial")]
     partial class Inicial
     {
         /// <inheritdoc />
@@ -26,17 +26,20 @@ namespace RegistroTecnicos.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<decimal>("Costo")
+                    b.Property<decimal?>("Costo")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Descripcion")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Existencia")
-                        .HasColumnType("INTEGER");
+                    b.Property<decimal?>("Existencia")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
-                    b.Property<decimal>("Precio")
+                    b.Property<decimal?>("Precio")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("ArticuloId");
@@ -49,7 +52,7 @@ namespace RegistroTecnicos.Migrations
                             ArticuloId = 1,
                             Costo = 50m,
                             Descripcion = "Kit de Herramientas Básico",
-                            Existencia = 20,
+                            Existencia = 20m,
                             Precio = 100m
                         },
                         new
@@ -57,7 +60,7 @@ namespace RegistroTecnicos.Migrations
                             ArticuloId = 2,
                             Costo = 30m,
                             Descripcion = "Multímetro Digital",
-                            Existencia = 15,
+                            Existencia = 15m,
                             Precio = 70m
                         },
                         new
@@ -65,7 +68,7 @@ namespace RegistroTecnicos.Migrations
                             ArticuloId = 3,
                             Costo = 20m,
                             Descripcion = "Sensor de Movimiento",
-                            Existencia = 25,
+                            Existencia = 25m,
                             Precio = 45m
                         },
                         new
@@ -73,7 +76,7 @@ namespace RegistroTecnicos.Migrations
                             ArticuloId = 4,
                             Costo = 150m,
                             Descripcion = "Cámara de Seguridad",
-                            Existencia = 10,
+                            Existencia = 10m,
                             Precio = 300m
                         },
                         new
@@ -81,7 +84,7 @@ namespace RegistroTecnicos.Migrations
                             ArticuloId = 5,
                             Costo = 5m,
                             Descripcion = "Cableado Eléctrico",
-                            Existencia = 100,
+                            Existencia = 100m,
                             Precio = 15m
                         },
                         new
@@ -89,7 +92,7 @@ namespace RegistroTecnicos.Migrations
                             ArticuloId = 6,
                             Costo = 80m,
                             Descripcion = "Batería de Respaldo",
-                            Existencia = 8,
+                            Existencia = 8m,
                             Precio = 180m
                         },
                         new
@@ -97,7 +100,7 @@ namespace RegistroTecnicos.Migrations
                             ArticuloId = 7,
                             Costo = 60m,
                             Descripcion = "Fuente de Alimentación",
-                            Existencia = 12,
+                            Existencia = 12m,
                             Precio = 120m
                         },
                         new
@@ -105,7 +108,7 @@ namespace RegistroTecnicos.Migrations
                             ArticuloId = 8,
                             Costo = 250m,
                             Descripcion = "Panel Solar",
-                            Existencia = 5,
+                            Existencia = 5m,
                             Precio = 500m
                         },
                         new
@@ -113,7 +116,7 @@ namespace RegistroTecnicos.Migrations
                             ArticuloId = 9,
                             Costo = 90m,
                             Descripcion = "Disco Duro SSD 1TB",
-                            Existencia = 10,
+                            Existencia = 10m,
                             Precio = 200m
                         },
                         new
@@ -121,7 +124,7 @@ namespace RegistroTecnicos.Migrations
                             ArticuloId = 10,
                             Costo = 40m,
                             Descripcion = "Router Wi-Fi",
-                            Existencia = 15,
+                            Existencia = 15m,
                             Precio = 100m
                         });
                 });
@@ -239,32 +242,34 @@ namespace RegistroTecnicos.Migrations
 
             modelBuilder.Entity("RegistroTecnicos.Models.TrabajosDetalle", b =>
                 {
-                    b.Property<int>("DetalleId")
+                    b.Property<int?>("DetalleId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("ArticuloId")
+                    b.Property<int?>("ArticuloId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Cantidad")
                         .HasColumnType("INTEGER");
 
-                    b.Property<decimal>("Costo")
+                    b.Property<decimal?>("Costo")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<decimal>("Precio")
+                    b.Property<decimal?>("Precio")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("TrabajoId")
+                    b.Property<int?>("TrabajosId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("DetalleId");
 
                     b.HasIndex("ArticuloId");
 
-                    b.HasIndex("TrabajoId");
+                    b.HasIndex("TrabajosId");
 
-                    b.ToTable("TrabajosDetalles");
+                    b.ToTable("TrabajosDetalle");
                 });
 
             modelBuilder.Entity("RegistroTecnicos.Models.Tecnicos", b =>
@@ -309,19 +314,15 @@ namespace RegistroTecnicos.Migrations
                 {
                     b.HasOne("RegistroTecnicos.Models.Articulos", "Articulos")
                         .WithMany()
-                        .HasForeignKey("ArticuloId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ArticuloId");
 
-                    b.HasOne("RegistroTecnicos.Models.Trabajos", "Trabajo")
-                        .WithMany("TrabajoDetalles")
-                        .HasForeignKey("TrabajoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("RegistroTecnicos.Models.Trabajos", "Trabajos")
+                        .WithMany("TrabajosDetalle")
+                        .HasForeignKey("TrabajosId");
 
                     b.Navigation("Articulos");
 
-                    b.Navigation("Trabajo");
+                    b.Navigation("Trabajos");
                 });
 
             modelBuilder.Entity("RegistroTecnicos.Models.Prioridades", b =>
@@ -331,7 +332,7 @@ namespace RegistroTecnicos.Migrations
 
             modelBuilder.Entity("RegistroTecnicos.Models.Trabajos", b =>
                 {
-                    b.Navigation("TrabajoDetalles");
+                    b.Navigation("TrabajosDetalle");
                 });
 #pragma warning restore 612, 618
         }
