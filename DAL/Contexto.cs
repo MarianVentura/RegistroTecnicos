@@ -14,21 +14,10 @@ public class Contexto : DbContext
     public DbSet<Prioridades> Prioridades { get; set; }
 
     public DbSet<Articulos> Articulos { get; set; }
-    public DbSet<TrabajosDetalle> TrabajosDetalles { get; set; }
+    public DbSet<TrabajosDetalle> TrabajosDetalle { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        base.OnModelCreating(modelBuilder);
-
-        modelBuilder.Entity<TrabajosDetalle>()
-            .HasOne(td => td.Trabajo)
-            .WithMany(t => t.TrabajoDetalles)
-            .HasForeignKey(td => td.TrabajoId);
-
-        modelBuilder.Entity<TrabajosDetalle>()
-            .HasOne(td => td.Articulos)
-            .WithMany()
-            .HasForeignKey(td => td.ArticuloId);
-
+   
         modelBuilder.Entity<Articulos>().HasData(
             new Articulos { ArticuloId = 1, Descripcion = "Kit de Herramientas Básico", Costo = 50m, Precio = 100m, Existencia = 20 },
             new Articulos { ArticuloId = 2, Descripcion = "Multímetro Digital", Costo = 30m, Precio = 70m, Existencia = 15 },
@@ -41,6 +30,8 @@ public class Contexto : DbContext
             new Articulos { ArticuloId = 9, Descripcion = "Disco Duro SSD 1TB", Costo = 90m, Precio = 200m, Existencia = 10 },
             new Articulos { ArticuloId = 10, Descripcion = "Router Wi-Fi", Costo = 40m, Precio = 100m, Existencia = 15 }
         );
+
+        base.OnModelCreating(modelBuilder);
 
     }
 }
