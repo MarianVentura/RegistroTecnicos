@@ -3,6 +3,7 @@
 @inject TrabajosServices trabajosServices
 @inject ClientesServices clientesServices
 @inject TecnicoServices tecnicoServices
+@inject ArticuloServices articulosServices // Cambié aquí
 @inject NavigationManager navigationManager
 @rendermode InteractiveServer
 
@@ -79,6 +80,55 @@
                 <InputNumber @bind-Value="trabajo.Monto" class="form-control" />
                 <ValidationMessage For="@(() => trabajo.Monto)" />
             </div>
+
+            @* Detalles de artículos utilizados *@
+            <div class="mb-3">
+                <h5>Detalles de artículos utilizados</h5>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Artículo</th>
+                            <th>Cantidad</th>
+                            <th>Precio</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var detalle in ListaTrabajoDetalle)
+                        {
+                            <tr>
+                                <td>
+                                    <InputSelect @bind-Value="detalle.ArticuloId" class="form-control">
+                                        <option value="">Seleccione un Artículo</option>
+                                        @if (articulos != null)
+                                        {
+                                            @foreach (var articulo in articulos)
+                                            {
+                                                <option value="@articulo.ArticuloId">@articulo.Descripcion</option>
+                                            }
+                                        }
+                                    </InputSelect>
+                                    <ValidationMessage For="@(() => detalle.ArticuloId)" />
+                                </td>
+                                <td>
+                                    <InputNumber @bind-Value="detalle.Cantidad" class="form-control" />
+                                    <ValidationMessage For="@(() => detalle.Cantidad)" />
+                                </td>
+                                <td>
+                                    <InputNumber @bind-Value="detalle.Precio" class="form-control" />
+                                    <ValidationMessage For="@(() => detalle.Precio)" />
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-outline-danger" @onclick="() => EliminarElDetalle(detalle)">
+                                        <span class="bi bi-trash"></span> Eliminar
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <button type="button" class="btn btn-secondary" @onclick="AgregarDetalle">Agregar Artículo</button>
+            </div>
         </div>
 
         <div class="card-footer bg-light d-flex justify-content-center mt-3">
@@ -97,11 +147,14 @@
     public Trabajos trabajo { get; set; } = new Trabajos();
     public List<Clientes> clientes { get; set; } = new List<Clientes>();
     public List<Tecnicos> tecnicos { get; set; } = new List<Tecnicos>();
+    public List<Articulos> articulos { get; set; } = new List<Articulos>(); // Para los artículos
+    public List<TrabajosDetalle> ListaTrabajoDetalle { get; set; } = new List<TrabajosDetalle>(); // Para los detalles
 
     protected override async Task OnInitializedAsync()
     {
         clientes = await clientesServices.Listar(e => e.ClienteId > 0);
         tecnicos = await tecnicoServices.Listar(t => t.TecnicoId > 0);
+        articulos = await articulosServices.ListaArticulos(); // Aquí se llama al método correcto
 
         if (TrabajoId != 0)
         {
@@ -115,6 +168,7 @@
         if (trabajoEncontrado != null)
         {
             trabajo = trabajoEncontrado;
+            ListaTrabajoDetalle = trabajo.TrabajosDetalle.ToList(); // Asignar detalles del trabajo
         }
         else
         {
@@ -124,6 +178,7 @@
 
     public async Task Guardar()
     {
+        trabajo.TrabajosDetalle = ListaTrabajoDetalle; // Asegurarse de que los detalles se guarden
         var guardo = await trabajosServices.Guardar(trabajo);
         if (guardo)
         {
@@ -140,5 +195,15 @@
     private void Volver()
     {
         navigationManager.NavigateTo("/Trabajos/Index");
+    }
+
+    public void AgregarDetalle()
+    {
+        ListaTrabajoDetalle.Add(new TrabajosDetalle()); // Agregar un nuevo detalle vacío
+    }
+
+    public void EliminarElDetalle(TrabajosDetalle detalle)
+    {
+        ListaTrabajoDetalle.Remove(detalle); // Eliminar el detalle seleccionado
     }
 }
