@@ -28,19 +28,56 @@
                         </div>
                     </div>
                 </div>
+
+                @* Detalles de artículos utilizados *@
+                <div class="row">
+                    <div class="col-md-12">
+                        <h5>Detalles de Artículos Utilizados</h5>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Artículo</th>
+                                    <th>Cantidad</th>
+                                    <th>Precio</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (trabajo.TrabajosDetalle != null && trabajo.TrabajosDetalle.Count > 0)
+                                {
+                                    foreach (var detalle in trabajo.TrabajosDetalle)
+                                    {
+                                        <tr>
+                                            <td>@detalle.Articulos.Descripcion</td>
+                                            <td>@detalle.Cantidad</td>
+                                            <td>@detalle.Precio</td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="3" class="text-center">No se han utilizado artículos en este trabajo.</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
             <div class="card-footer d-flex justify-content-between">
                 <button class="btn btn-success" @onclick="EnviarWhatsApp">
                     <i class="bi bi-whatsapp"></i> Enviar WhatsApp
                 </button>
 
-                @*Mensaje de notificación*@
+                @* Mensaje de notificación *@
                 @if (!string.IsNullOrEmpty(notificacion))
                 {
                     <div class="alert alert-info mt-3">@notificacion</div>
                 }
 
-                <button type="button" class="btn btn-primary" @onclick="Volver"><i class="bi bi-arrow-left-square-fill"></i> Volver</button>
+                <button type="button" class="btn btn-primary" @onclick="Volver">
+                    <i class="bi bi-arrow-left-square-fill"></i> Volver
+                </button>
             </div>
         </div>
     </div>
