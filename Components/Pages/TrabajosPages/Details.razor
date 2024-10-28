@@ -96,6 +96,8 @@ else
     protected override async Task OnInitializedAsync()
     {
         trabajo = await trabajosServices.Buscar(TrabajoId);
+        trabajo.TrabajosDetalle = await trabajosServices.ObtenerDetallesPorTrabajoId(TrabajoId);
+
     }
 
     public void Volver()
