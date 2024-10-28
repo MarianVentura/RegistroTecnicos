@@ -32,7 +32,7 @@ public class Program
         builder.Services.AddScoped<ArticuloServices>();
         builder.Services.AddScoped<CotizacionesServices>();
         builder.Services.AddScoped<CotizacionesDetalleServices>();
-
+        
 
 
         builder.Services.AddBlazorBootstrap();
