@@ -7,48 +7,70 @@ namespace RegistroTecnicos.Services;
 
 public class ArticuloServices
 {
-    private readonly Contexto _contexto;
+    private readonly IDbContextFactory<Contexto> _dbFactory;
 
-    public ArticuloServices(Contexto contexto)
+    public ArticuloServices(IDbContextFactory<Contexto> dbFactory)
     {
-        _contexto = contexto;
+        _dbFactory = dbFactory;
     }
 
     public async Task<List<Articulos>> ListaArticulos()
     {
-        return await _contexto.Articulos
+        await using var contexto = await _dbFactory.CreateDbContextAsync();
+        return await contexto.Articulos
             .AsNoTracking()
             .ToListAsync();
     }
 
     public async Task<Articulos?> ObtenerArticuloPorId(int id)
     {
-        return await _contexto.Articulos
+        await using var contexto = await _dbFactory.CreateDbContextAsync();
+        return await contexto.Articulos
             .AsNoTracking()
             .FirstOrDefaultAsync(a => a.ArticuloId == id);
     }
 
-    public async Task ActualizarExistencia(int articuloId, decimal cantidad)
+    public async Task<bool> ActualizarExistencia(int articuloId, int cantidad)
     {
-        var articulo = await _contexto.Articulos.FindAsync(articuloId);
+        await using var contexto = await _dbFactory.CreateDbContextAsync();
+        var articulo = await contexto.Articulos.FindAsync(articuloId);
+
         if (articulo != null)
         {
-            articulo.Existencia -= cantidad;
-            _contexto.Articulos.Update(articulo);
-            await _contexto.SaveChangesAsync();
+            int nuevaExistencia = articulo.Existencia - cantidad;
+
+            if (nuevaExistencia < 0)
+            {
+                throw new InvalidOperationException("No hay suficiente existencia para reducir.");
+            }
+
+            articulo.Existencia = nuevaExistencia;
+            contexto.Articulos.Update(articulo);
+            await contexto.SaveChangesAsync();
+            return true;
         }
+
+        return false;
     }
 
-    public async Task AgregarCantidad(int articuloId, int cantidad)
+    public async Task<bool> AgregarCantidad(int articuloId, int cantidad)
     {
-        var articulo = await _contexto.Articulos.FindAsync(articuloId);
+        if (cantidad <= 0)
+        {
+            throw new ArgumentException("La cantidad a agregar debe ser mayor que cero.");
+        }
+
+        await using var contexto = await _dbFactory.CreateDbContextAsync();
+        var articulo = await contexto.Articulos.FindAsync(articuloId);
 
         if (articulo != null)
         {
             articulo.Existencia += cantidad;
-
-            await _contexto.SaveChangesAsync();
+            contexto.Articulos.Update(articulo);
+            await contexto.SaveChangesAsync();
+            return true;
         }
-    }
 
+        return false;
+    }
 }
