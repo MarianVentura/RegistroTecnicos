@@ -14,15 +14,6 @@
         </div>
 
         <div class="card-body">
-            @*TecnicoId*@
-            <div class="row">
-                <div class="col-4 ms-3">
-                    <label class="form-label"><strong>TécnicoId</strong></label>
-                    <InputNumber class="form-control" @bind-Value="tecnico.TecnicoId" />
-                    <ValidationMessage For="@(() => tecnico.TecnicoId)" />
-                </div>
-            </div>
-
             @*Nombres*@
             <div class="mb-3">
                 <label for="Nombres" class="form-label">Nombres:</label>
@@ -30,9 +21,8 @@
                 <ValidationMessage For="@(() => tecnico.Nombres)" />
                 @if (Existe)
                 {
-                    <p class="text-danger">Ya existe una persona que tiene este nombre.</p>
+                    <p class="text-danger">Ya existe un técnico con ese nombre.</p>
                 }
-
             </div>
 
             @*TipoTecnico*@
@@ -51,7 +41,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
 
         @*SueldoHora*@
@@ -64,7 +53,6 @@
 
     <div class="card-footer bg-light d-flex justify-content-center mt-3">
         <div class="btn-group">
-
             <button type="submit" class="btn btn-success ml-2"><span class="bi bi-check-circle-fill"></span> Guardar </button>
             <button type="button" class="btn btn-danger" @onclick="Eliminar"><span class="bi bi-trash-fill"></span> Eliminar </button>
             <button type="button" class="btn btn-primary" @onclick="Volver"><span class="bi bi-arrow-left-square-fill"></span> Volver </button>
@@ -75,16 +63,16 @@
 @code {
     [Parameter]
     public int TecnicoId { get; set; }
-
     public Tecnicos tecnico { get; set; } = new Tecnicos();
     public List<TiposTecnicos> ListaTiposTecnicos { get; set; } = new List<TiposTecnicos>();
     private bool Existe = false;
+    private string Mensaje { get; set; } = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
         ListaTiposTecnicos = await tiposTecnicosServices.Listar(t => true);
+        await Nuevo();
     }
-
 
     public async Task Nuevo()
     {
@@ -100,6 +88,7 @@
         if (tecnicoEncontrado != null)
         {
             tecnico = tecnicoEncontrado;
+            Existe = true; // Marcamos como existente si se encuentra
         }
         else
         {
@@ -107,25 +96,46 @@
         }
     }
 
-    public async Task Guardar()
+    private async Task Guardar()
     {
-        if (await Validar())
+        try
         {
-            return;
-        }
+            if (await Validar())
+            {
+                Mensaje = "Ya existe un técnico con ese nombre.";
+                return;
+            }
 
-        var guardo = await tecnicoServices.Guardar(tecnico);
-        if (guardo)
+            var crear = await tecnicoServices.Guardar(tecnico);
+
+            if (crear)
+            {
+                Mensaje = "Se ha creado correctamente.";
+                await Task.Delay(2000);
+                Volver();
+            }
+            else
+            {
+                Mensaje = "No se pudo crear el técnico.";
+            }
+        }
+        catch (Exception ex)
         {
-            await Nuevo();
-            navigationManager.NavigateTo("/Tecnico/index");
+            Mensaje = $"Error al guardar: {ex.Message}";
         }
     }
 
     public async Task Eliminar()
     {
-        var eliminado = await tecnicoServices.Eliminar(tecnico);
-        await Nuevo();
+        if (tecnico.TecnicoId > 0)
+        {
+            var eliminado = await tecnicoServices.Eliminar(tecnico);
+            if (eliminado)
+            {
+                await Nuevo();
+                navigationManager.NavigateTo("/Tecnico/index");
+            }
+        }
     }
 
     private void Volver()
@@ -133,10 +143,8 @@
         navigationManager.NavigateTo("/Tecnico/index");
     }
 
-    public async Task<bool> Validar()
+    private async Task<bool> Validar()
     {
-        var listaTecnicos = await tecnicoServices.Listar(t => t.Nombres.ToLower() == tecnico.Nombres.ToLower() && t.TecnicoId != tecnico.TecnicoId);
-        Existe = listaTecnicos.Any();
-        return Existe;
+        return await tecnicoServices.ExisteTecnico(tecnico.TecnicoId, tecnico.Nombres);
     }
 }
