@@ -26,7 +26,7 @@
                 <label for="TrabajoId" class="form-label">TrabajoId:</label>
                 <div class="input-group">
                     <div style="width: 40%; height: 1em;">
-                        <InputNumber @bind-Value="Trabajos.TrabajoId" class="form-control" style="font-size: 0.8em;" aria-describedby="BotonBuscar" />
+                        <InputNumber @bind-Value="Trabajos.TrabajoId" class="form-control" style="font-size: 0.8em;" aria-describedby="BotonBuscar" Disabled />
                         <ValidationMessage For="@(() => Trabajos.TrabajoId)" />
                     </div>
                 </div>
@@ -145,7 +145,7 @@
                                 <td>@detalle.Precio</td>
                                 <td>
                                     <button type="button" class="btn btn-outline-danger" @onclick="() => EliminarElDetalle(detalle)">
-                                        <span class="bi bi-trash"></span> 
+                                        <span class="bi bi-trash"></span>
                                     </button>
                                 </td>
                             </tr>
@@ -174,7 +174,7 @@
             </button>
             @* Botón Retroceder *@
             <a type="button" href="/Trabajos/Index/" class="btn btn-outline-danger">
-                <span class="bi bi-arrow-bar-left"></span> Retroceder
+                <span class="bi bi-arrow-left-circle"></span> Retroceder
             </a>
         </div>
     </div>
@@ -199,6 +199,17 @@
     AlertColor alertColorGuardo, alertColorError;
     IconName alertIconNameGuardo, alertIconNameError;
     string alertaGuardo = "", alertaError = "";
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        ListaClientes = await trabajosServices.ObtenerClientes();
+        ListaTecnicos = await trabajosServices.ObtenerTecnicos();
+        ListaPrioridades = await trabajosServices.ObtenerPrioridades();
+        ListaTrabajoDetalle = await trabajosServices.ObtenerDetalle();
+        ListaArticulo = await trabajosServices.ObtenerArticulos();
+    }
+
 
     public async Task MostrarNotificacion()
     {
@@ -281,26 +292,24 @@
         TrabajosDetalle.Precio = articuloSeleccionado.Precio;
 
         var nuevoDetalle = new TrabajosDetalle
-        {
-            ArticuloId = articuloSeleccionado.ArticuloId,
-            Cantidad = TrabajosDetalle.Cantidad,
-            Precio = articuloSeleccionado.Precio
-        };
+            {
+                ArticuloId = articuloSeleccionado.ArticuloId,
+                Cantidad = TrabajosDetalle.Cantidad,
+                Precio = articuloSeleccionado.Precio
+            };
 
 
         ListaTrabajoDetalle.Add(nuevoDetalle);
         TrabajosDetalle = new TrabajosDetalle();
         selectArticuloId = 0;
 
-       await CalcularTotal();
+        await CalcularTotal();
     }
-
 
 
     private async Task CalcularTotal()
     {
-       MontoArticulos = ListaTrabajoDetalle.Sum(d => (d.Precio ?? 0) * d.Cantidad);
-       
+        MontoArticulos = ListaTrabajoDetalle.Sum(d => d.Precio * d.Cantidad); 
     }
 
     public async Task EliminarElDetalle(TrabajosDetalle detalle)
@@ -311,22 +320,12 @@
         {
             articuloSeleccionado.Existencia += detalle.Cantidad;
         }
+
         ListaTrabajoDetalle.Remove(detalle);
-        selectArticuloId = detalle.ArticuloId ?? 0;
+
+        selectArticuloId = detalle.ArticuloId ?? 0; 
         TrabajosDetalle.Cantidad = detalle.Cantidad;
-        TrabajosDetalle.Precio = detalle.Precio ?? 0;
-        CalcularTotal();
+        TrabajosDetalle.Precio = detalle.Precio; 
+        await CalcularTotal(); 
     }
-
-    protected override async Task OnInitializedAsync()
-    {
-       
-             ListaClientes = await trabajosServices.ObtenerClientes();
-             ListaTecnicos = await trabajosServices.ObtenerTecnicos();
-             ListaPrioridades = await trabajosServices.ObtenerPrioridades();
-             ListaTrabajoDetalle = await trabajosServices.ObtenerDetalle();
-             ListaArticulo = await trabajosServices.ObtenerArticulos();
-    }
-
-    
 }
