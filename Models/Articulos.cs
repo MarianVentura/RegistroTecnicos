@@ -14,13 +14,13 @@ public class Articulos
     public string? Descripcion { get; set; }
 
     [Required(ErrorMessage = "Este Campo debe de ser obligatorio")]
-    public decimal? Costo { get; set; }
+    public decimal Costo { get; set; }
 
 
     [Required(ErrorMessage = "Este Campo debe de ser obligatorio")]
-    public decimal? Precio { get; set; }
+    public decimal Precio { get; set; }
 
     [Required(ErrorMessage = "Este Campo debe de ser obligatorio")]
-    public decimal? Existencia { get; set; }
+    public int Existencia { get; set; }
 
 }
