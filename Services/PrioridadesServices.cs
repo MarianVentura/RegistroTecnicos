@@ -7,43 +7,55 @@ namespace RegistroTecnicos.Services;
 
 public class PrioridadesServices
 {
-    private readonly Contexto _contexto;
+    private readonly IDbContextFactory<Contexto> _dbFactory;
 
-    public PrioridadesServices(Contexto contexto)
+    public PrioridadesServices(IDbContextFactory<Contexto> dbFactory)
     {
-        _contexto = contexto;
+        _dbFactory = dbFactory;
     }
 
     public async Task<bool> Existe(int PrioridadId)
     {
-        return await _contexto.Prioridades.AnyAsync(p => p.PrioridadId == PrioridadId);
+        await using var contexto = await _dbFactory.CreateDbContextAsync();
+        return await contexto.Prioridades.AnyAsync(p => p.PrioridadId == PrioridadId);
     }
 
     private async Task<bool> Insertar(Prioridades prioridad)
     {
-        _contexto.Prioridades.Add(prioridad);
-        return await _contexto.SaveChangesAsync() > 0;
+        await using var contexto = await _dbFactory.CreateDbContextAsync();
+        contexto.Prioridades.Add(prioridad);
+        return await contexto.SaveChangesAsync() > 0;
     }
 
     private async Task<bool> Modificar(Prioridades prioridad)
     {
-        _contexto.Prioridades.Update(prioridad);
-        return await _contexto.SaveChangesAsync() > 0;
+        await using var contexto = await _dbFactory.CreateDbContextAsync();
+        contexto.Prioridades.Update(prioridad);
+        return await contexto.SaveChangesAsync() > 0;
     }
 
     public async Task<bool> Guardar(Prioridades prioridad)
     {
-        if (!await Existe(prioridad.PrioridadId))
+        await using var contexto = await _dbFactory.CreateDbContextAsync();
+
+        if (prioridad.PrioridadId == 0 || !await Existe(prioridad.PrioridadId))
         {
-            return await Insertar(prioridad);
+            contexto.Prioridades.Add(prioridad);
+            return await contexto.SaveChangesAsync() > 0;
         }
         else
-            return await Modificar(prioridad);
+        {
+            contexto.Prioridades.Update(prioridad);
+            return await contexto.SaveChangesAsync() > 0;
+        }
     }
+
+
 
     public async Task<bool> Eliminar(int id)
     {
-        var prioridadesEliminadas = await _contexto.Prioridades
+        await using var contexto = await _dbFactory.CreateDbContextAsync();
+        var prioridadesEliminadas = await contexto.Prioridades
             .Where(p => p.PrioridadId == id)
             .ExecuteDeleteAsync();
         return prioridadesEliminadas > 0;
@@ -51,14 +63,16 @@ public class PrioridadesServices
 
     public async Task<Prioridades?> Buscar(int id)
     {
-        return await _contexto.Prioridades
+        await using var contexto = await _dbFactory.CreateDbContextAsync();
+        return await contexto.Prioridades
             .AsNoTracking()
             .FirstOrDefaultAsync(p => p.PrioridadId == id);
     }
 
     public async Task<List<Prioridades>> Listar(Expression<Func<Prioridades, bool>> criterio)
     {
-        return await _contexto.Prioridades
+        await using var contexto = await _dbFactory.CreateDbContextAsync();
+        return await contexto.Prioridades
             .AsNoTracking()
             .Where(criterio)
             .ToListAsync();
@@ -66,7 +80,8 @@ public class PrioridadesServices
 
     public async Task<bool> ExistePrioridad(int prioridadId, string descripcion)
     {
-        return await _contexto.Prioridades
+        await using var contexto = await _dbFactory.CreateDbContextAsync();
+        return await contexto.Prioridades
             .AnyAsync(p => p.PrioridadId != prioridadId && p.Descripcion.ToLower().Equals(descripcion.ToLower()));
     }
 }
