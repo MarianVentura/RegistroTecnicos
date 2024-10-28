@@ -1,0 +1,72 @@
+﻿@page "/Cotizaciones/Details/{CotizacionId:int}"
+@inject CotizacionesServices cotizacionesServices
+@inject CotizacionesDetalleServices cotizacionesDetalleServices
+@inject NavigationManager navigationManager
+@rendermode InteractiveServer
+
+<PageTitle>Detalles de Cotización</PageTitle>
+<div class="container">
+    <div class="shadow-lg">
+        @*Header*@
+        <div class="card-header">
+            <h3><strong>Detalles de Cotización</strong></h3>
+        </div>
+        @*Body*@
+        <div class="card-body">
+            <dl class="row">
+                @*CotizacionId*@
+                <dt class="col-sm-3">Id:</dt>
+                <dd class="col-sm-9">@Cotizacion.CotizacionId</dd>
+                @*Fecha*@
+                <dt class="col-sm-3">Fecha:</dt>
+                <dd class="col-sm-9">@Cotizacion.Fecha.ToShortDateString()</dd>
+                @*ClienteId*@
+                <dt class="col-sm-3">ClienteId:</dt>
+                <dd class="col-sm-9">@Cotizacion.ClienteId</dd>
+                @*Nombre del Cliente*@
+                <dt class="col-sm-3">Nombre del Cliente:</dt>
+                <dd class="col-sm-9">@Cotizacion?.Cliente?.Nombres</dd>
+                @*Observacion*@
+                <dt class="col-sm-3">Observación:</dt>
+                <dd class="col-sm-9">@Cotizacion.Observacion</dd>
+                @*Artículos*@
+                <dt class="col-sm-3">Artículos:</dt>
+                <dd class="col-sm-9">
+                    <ul>
+                        @foreach (var detalle in ListarCotizacionDetalle)
+                        {
+                            <li>@detalle.Articulo?.Descripcion (Cantidad: @detalle.Cantidad, Precio: @detalle.Precio)</li>
+                        }
+                    </ul>
+                </dd>
+                @*Monto*@
+                <dt class="col-sm-3">Monto Total:</dt>
+                <dd class="col-sm-9">@Cotizacion.Monto</dd>
+            </dl>
+        </div>
+        @*Footer*@
+        <div class="card-footer">
+            <button type="button" class="btn btn-secondary" @onclick="Volver">Volver</button>
+        </div>
+    </div>
+</div>
+@Mensaje
+
+@code {
+    [Parameter]
+    public int CotizacionId { get; set; }
+    public Cotizaciones Cotizacion { get; set; } = new Cotizaciones();
+    public List<CotizacionesDetalle> ListarCotizacionDetalle { get; set; } = new List<CotizacionesDetalle>();
+    public string Mensaje { get; set; } = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Cotizacion = await cotizacionesServices.Buscar(CotizacionId);
+        ListarCotizacionDetalle = await cotizacionesDetalleServices.Listar(d => d.CotizacionId == CotizacionId);
+    }
+
+    public void Volver()
+    {
+        navigationManager.NavigateTo("Cotizaciones/Index");
+    }
+}
