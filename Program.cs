@@ -18,7 +18,8 @@ public class Program
             .AddInteractiveServerComponents();
 
         //Obtenemos el ConStr para usarlo en el contexto
-        var ConStr = builder.Configuration.GetConnectionString("ConStr");
+        var ConStr = builder.Configuration.GetConnectionString("SqlConStr");
+        builder.Services.AddDbContextFactory<Contexto>(o => o.UseSqlServer(ConStr));
 
         //Agregamos el contexto al builder con el ConStr
         builder.Services.AddDbContext<Contexto>(Options => Options.UseSqlite(ConStr));
@@ -29,6 +30,8 @@ public class Program
         builder.Services.AddScoped<TrabajosServices>();
         builder.Services.AddScoped<PrioridadesServices>();
         builder.Services.AddScoped<ArticuloServices>();
+        builder.Services.AddScoped<CotizacionesServices>();
+        builder.Services.AddScoped<CotizacionesDetalleServices>();
 
 
 
